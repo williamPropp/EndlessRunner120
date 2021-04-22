@@ -10,6 +10,20 @@ class Play extends Phaser.Scene {
         this.load.image('background', 'tempBG.png');
     }
 
+    moveForward() {
+        this.bg.tilePositionX += 32;
+        this.bg.tilePositionY -= 32;
+    }
+
+    doTrip(tooFast, repeat) {
+        if(tooFast) {
+            console.log('you walked too fast, and you tripped dummy');
+        }
+        if(repeat) {
+            console.log('you forgot how to walk, and you tripped dummy');
+        }
+    }
+
     create() {
 
         //Initialize variables
@@ -38,34 +52,39 @@ class Play extends Phaser.Scene {
         this.frameCounter++;
 
         //Left step check
-        if(!this.movedLeft && Phaser.Input.Keyboard.JustDown(keyD) && !this.justTripped) {
+        if(!this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA) && !this.justTripped) {
             this.lastLeftStep = this.frameCounter;
-            this.bg.tilePositionX += 32;
-            this.bg.tilePositionY -= 32;
+            this.moveForward();
             this.movedLeft = true;
             this.movedRight = false;
+        } else if(this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA) && !this.justTripped) {
+            this.doTrip(false, true);
+            this.justTripped = true;
         }
 
         //Right step check
-        if(!this.movedRight && Phaser.Input.Keyboard.JustDown(keyA) && !this.justTripped) {
+        if(!this.movedRight && Phaser.Input.Keyboard.JustDown(keyD) && !this.justTripped) {
             this.lastRightStep = this.frameCounter;
-            this.bg.tilePositionY -= 32;
-            this.bg.tilePositionX += 32;
+            this.moveForward();
             this.movedRight = true;
             this.movedLeft = false;
+        } else if(this.movedRight && Phaser.Input.Keyboard.JustDown(keyD) && !this.justTripped) {
+            this.doTrip(false, true);
+            this.justTripped = true;
         }
 
         //Get up after tripping by pressing SPACE
         if(this.justTripped && Phaser.Input.Keyboard.JustDown(keySPACE)) {
-            this.bg.tilePositionY -= 32;
-            this.bg.tilePositionX += 32;
+            this.moveForward();
             this.lastLeftStep += this.tripSpeed + 1;
             this.justTripped = false;
+            this.movedRight = false;
+            this.movedLeft = false;
         }
 
         //Speed Check
         if(Math.abs(this.lastRightStep - this.lastLeftStep) != 0 && Math.abs(this.lastRightStep - this.lastLeftStep) < this.tripSpeed && !this.justTripped) {
-            console.log('you walked too fast, and you tripped dummy');
+            this.doTrip(true, false);
             this.justTripped = true;
         }
 
