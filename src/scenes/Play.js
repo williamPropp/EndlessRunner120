@@ -57,6 +57,7 @@ class Play extends Phaser.Scene {
             this.moveForward();
             this.movedLeft = true;
             this.movedRight = false;
+            console.log('left step');
         } else if(this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA) && !this.justTripped) {
             this.doTrip(false, true);
             this.justTripped = true;
@@ -68,6 +69,7 @@ class Play extends Phaser.Scene {
             this.moveForward();
             this.movedRight = true;
             this.movedLeft = false;
+            console.log('right step');
         } else if(this.movedRight && Phaser.Input.Keyboard.JustDown(keyD) && !this.justTripped) {
             this.doTrip(false, true);
             this.justTripped = true;
