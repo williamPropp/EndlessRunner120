@@ -7,12 +7,11 @@ class Play extends Phaser.Scene {
     preload() {
         //Load all assets
         this.load.path = './assets/';
-        this.load.image('background', 'tempBG.png');
+        this.load.image('background', 'EW_street-01.png'); //'tempBG.png');
     }
 
     moveForward() {
-        this.bg.tilePositionX += 32;
-        this.bg.tilePositionY -= 32;
+        this.bg.tilePositionX += 16;
     }
 
     doTrip(tooFast, repeat) {
@@ -38,13 +37,16 @@ class Play extends Phaser.Scene {
         this.justTripped = false;
 
         //Add background
-        this.bg = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'background').setOrigin(0,0);
+        this.bg = this.add.tileSprite(-375, 200, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
+        this.bg.angle = -20;
+
 
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     }
 
     update() {
