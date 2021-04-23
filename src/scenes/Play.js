@@ -13,6 +13,7 @@ class Play extends Phaser.Scene {
         this.load.image('HB2', 'HB2.png');
         this.load.image('HB3', 'HB3.png');
         this.load.image('HB4', 'HB4.png');
+        this.load.image('enemy', 'person.jpg');
     }
 
     moveForward() {
@@ -29,6 +30,7 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+
 
         //Initialize variables
         this.frameCounter = 0;
@@ -52,7 +54,9 @@ class Play extends Phaser.Scene {
         this.hb4 = this.add.tileSprite(30, 30, 240, 51, 'HB4').setOrigin(0,0);
         this.hbOverlay = this.add.tileSprite(30, 30, 240, 51, 'HBoverlay').setOrigin(0,0);
 
-
+        //Create enemy
+        this.person = new Enemy(this, game.config.width , game.config.height , 'enemy').setOrigin(0,0);
+         
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -64,6 +68,9 @@ class Play extends Phaser.Scene {
     update() {
 
         this.frameCounter++;
+
+        //Update enemy movement
+        this.person.update();
 
         //Left step check
         if(!this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA) && !this.justTripped) {
