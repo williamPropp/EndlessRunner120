@@ -7,7 +7,7 @@ class Play extends Phaser.Scene {
     preload() {
         //Load all assets
         this.load.path = './assets/';
-        this.load.image('background', 'EW_street-01.png');
+        this.load.image('background', 'EW_bg_flipped.png');
         this.load.image('HBoverlay', 'HBoverlay.png');
         this.load.image('HB1', 'HB1.png');
         this.load.image('HB2', 'HB2.png');
@@ -17,6 +17,8 @@ class Play extends Phaser.Scene {
 
     moveForward() {
         this.bg.tilePositionX += 16;
+        this.stepsTravelled += 1;
+        console.log(this.stepsTravelled);
     }
 
     doTrip(tooFast, repeat) {
@@ -30,13 +32,20 @@ class Play extends Phaser.Scene {
 
     create() {
 
-        //Initialize variables
+        //Initialize data variables
+        this.playerHealth = 4;
         this.frameCounter = 0;
         this.lastLeftStep = 0;
         this.lastRightStep = 0;
         this.tripSpeed = 10;
+        this.stepsTravelled = 0;
+        
+        //Initialize UI coordinate variables
+        this.distanceTextX = game.config.width - (game.config.width / 3);
+        this.distanceTextY = game.config.height / 32;
 
         //Add boolean flags
+        this.gameOver = false;
         this.movedLeft = false;
         this.movedRight = false;
         this.justTripped = false;
@@ -46,11 +55,16 @@ class Play extends Phaser.Scene {
         this.bg.angle = -20;
 
         //Add health bar
-        this.hb1 = this.add.tileSprite(30, 30, 240, 51, 'HB1').setOrigin(0,0);
-        this.hb2 = this.add.tileSprite(30, 30, 240, 51, 'HB2').setOrigin(0,0);
-        this.hb3 = this.add.tileSprite(30, 30, 240, 51, 'HB3').setOrigin(0,0);
-        this.hb4 = this.add.tileSprite(30, 30, 240, 51, 'HB4').setOrigin(0,0);
-        this.hbOverlay = this.add.tileSprite(30, 30, 240, 51, 'HBoverlay').setOrigin(0,0);
+        this.hb1 = this.add.tileSprite(20, 20, 240, 51, 'HB1').setOrigin(0,0);
+        this.hb2 = this.add.tileSprite(20, 20, 240, 51, 'HB2').setOrigin(0,0);
+        this.hb3 = this.add.tileSprite(20, 20, 240, 51, 'HB3').setOrigin(0,0);
+        this.hb4 = this.add.tileSprite(20, 20, 240, 51, 'HB4').setOrigin(0,0);
+        this.hbOverlay = this.add.tileSprite(20, 20, 240, 51, 'HBoverlay').setOrigin(0,0);
+
+        //Add distance travelled
+        let distanceTextConfig = { fontFamily: 'Helvetica', fontSize: '28px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' };
+        this.distanceTravelledText = this.add.text(this.distanceTextX, this.distanceTextY, 'Distance Travelled:', distanceTextConfig);
+        this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTravelled + ' steps', distanceTextConfig);
 
 
         //Define keys
@@ -103,6 +117,9 @@ class Play extends Phaser.Scene {
             this.doTrip(true, false);
             this.justTripped = true;
         }
+
+        //Update score
+        this.distanceSteps.setText(this.stepsTravelled + ' steps');
 
     }
 }
