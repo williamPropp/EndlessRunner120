@@ -13,6 +13,7 @@ class Play extends Phaser.Scene {
         this.load.image('HB2', 'HB2.png');
         this.load.image('HB3', 'HB3.png');
         this.load.image('HB4', 'HB4.png');
+        this.load.image('enemy', 'person.jpg');
     }
 
     moveForward() {
@@ -66,7 +67,9 @@ class Play extends Phaser.Scene {
         this.distanceTravelledText = this.add.text(this.distanceTextX, this.distanceTextY, 'Distance Travelled:', distanceTextConfig);
         this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTravelled + ' steps', distanceTextConfig);
 
-
+        //Create enemy
+        this.person = new Enemy(this, game.config.width , game.config.height , 'enemy').setOrigin(0,0);
+         
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -78,6 +81,9 @@ class Play extends Phaser.Scene {
     update() {
 
         this.frameCounter++;
+
+        //Update enemy movement
+        this.person.update();
 
         //Left step check
         if(!this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA) && !this.justTripped) {

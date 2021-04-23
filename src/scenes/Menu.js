@@ -28,6 +28,5 @@ class Menu extends Phaser.Scene {
         if(this.keyF.isDown) {
             this.scene.start("playScene");
         }
-
     }
 }
