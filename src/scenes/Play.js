@@ -7,7 +7,12 @@ class Play extends Phaser.Scene {
     preload() {
         //Load all assets
         this.load.path = './assets/';
-        this.load.image('background', 'EW_street-01.png'); //'tempBG.png');
+        this.load.image('background', 'EW_street-01.png');
+        this.load.image('HBoverlay', 'HBoverlay.png');
+        this.load.image('HB1', 'HB1.png');
+        this.load.image('HB2', 'HB2.png');
+        this.load.image('HB3', 'HB3.png');
+        this.load.image('HB4', 'HB4.png');
     }
 
     moveForward() {
@@ -39,6 +44,13 @@ class Play extends Phaser.Scene {
         //Add background
         this.bg = this.add.tileSprite(-375, 200, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
         this.bg.angle = -20;
+
+        //Add health bar
+        this.hb1 = this.add.tileSprite(30, 30, 240, 51, 'HB1').setOrigin(0,0);
+        this.hb2 = this.add.tileSprite(30, 30, 240, 51, 'HB2').setOrigin(0,0);
+        this.hb3 = this.add.tileSprite(30, 30, 240, 51, 'HB3').setOrigin(0,0);
+        this.hb4 = this.add.tileSprite(30, 30, 240, 51, 'HB4').setOrigin(0,0);
+        this.hbOverlay = this.add.tileSprite(30, 30, 240, 51, 'HBoverlay').setOrigin(0,0);
 
 
         //Define keys
