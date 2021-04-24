@@ -14,32 +14,68 @@ class Play extends Phaser.Scene {
         this.load.image('HB3', 'HB3.png');
         this.load.image('HB4', 'HB4.png');
         this.load.image('enemy', 'person.jpg');
+        this.load.image('player', 'Player.png');
     }
 
     moveForward() {
         this.bg.tilePositionX += 16;
-        this.stepsTravelled += 1;
-        console.log(this.stepsTravelled);
+        this.stepsTraveled += 1;
     }
 
     doTrip(tooFast, repeat) {
         if(tooFast) {
-            console.log('you walked too fast, and you tripped dummy');
+            console.log('you walked too fast, and you tripped');
         }
         if(repeat) {
-            console.log('you forgot how to walk, and you tripped dummy');
+            console.log('you forgot how to walk, and you tripped');
         }
+    }
+
+    //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
+    takeDmg(value) {
+        this.playerHealth -= value;
+        console.log('you took ' + value + ' damage, now playerHealth = ' + this.playerHealth);
+
+        //Initialize array of hb sprites
+        let hbArray = [this.hb1, this.hb2, this.hb3, this.hb4];
+
+        if(this.playerHealth < 1) {
+            this.doGameOver();
+            for(let hbAll of hbArray) { //When gameOver triggers, make all hbSprites invisible
+                hbAll.alpha = 0;
+            }
+        } else if(this.playerHealth < 5) { //When regular damage is taken, reset all hbSprites visibility
+            for(let hbAll of hbArray) {
+                hbAll.alpha = 1;
+            }
+            hbArray.splice(this.playerHealth - 1, 1); //Remove the correct sprite from the array
+            for(let hbRemove of hbArray) { //Make all remaining hb  in the array invisible
+                hbRemove.alpha = 0;
+            }
+        } else { //If playerHealth ever goes over the max, reduce it to max
+            this.playerHealth = this.playerHealthMax;
+        }
+    }
+
+    doGameOver() {
+        this.gameOver = true;
+        this.add.text(game.config.width / 3, game.config.height / 2, 'GAMEOVER', { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
+        this.add.text((game.config.width / 5) * 2, (game.config.height / 7) * 4, 'press R to restart', { fontFamily: 'Helvetica', fontSize: '30px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
     }
 
     create() {
 
         //Initialize data variables
-        this.playerHealth = 4;
+        this.playerHealthMax = 4;
+        this.playerHealth = this.playerHealthMax;
         this.frameCounter = 0;
         this.lastLeftStep = 0;
         this.lastRightStep = 0;
         this.tripSpeed = 10;
-        this.stepsTravelled = 0;
+        this.stepsTraveled = 0;
+        this.playerX = game.config.width / 2;
+        this.playerY = ((game.config.height / 4) * 2) + 30;
+
         
         //Initialize UI coordinate variables
         this.distanceTextX = game.config.width - (game.config.width / 3);
@@ -63,12 +99,15 @@ class Play extends Phaser.Scene {
         this.hbOverlay = this.add.tileSprite(20, 20, 240, 51, 'HBoverlay').setOrigin(0,0);
 
         //Add distance travelled
-        let distanceTextConfig = { fontFamily: 'Helvetica', fontSize: '28px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' };
+        let distanceTextConfig = { fontFamily: 'Helvetica', fontSize: '28px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center' };
         this.distanceTravelledText = this.add.text(this.distanceTextX, this.distanceTextY, 'Distance Travelled:', distanceTextConfig);
-        this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTravelled + ' steps', distanceTextConfig);
+        this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTraveled + ' steps', distanceTextConfig);
 
         //Create enemy
         this.person = new Enemy(this, game.config.width , game.config.height , 'enemy').setOrigin(0,0);
+
+        //Create character
+        this.player = this.add.sprite(this.playerX, this.playerY, 'player').setOrigin(0,0);
          
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -76,56 +115,90 @@ class Play extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+        keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
     }
 
     update() {
 
         this.frameCounter++;
 
-        //Update enemy movement
-        this.person.update();
+        //While gameOver = false
+        if(!this.gameOver) {
 
-        //Left step check
-        if(!this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA) && !this.justTripped) {
-            this.lastLeftStep = this.frameCounter;
-            this.moveForward();
-            this.movedLeft = true;
-            this.movedRight = false;
-            console.log('left step');
-        } else if(this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA) && !this.justTripped) {
-            this.doTrip(false, true);
-            this.justTripped = true;
+            //Update enemy movement
+            this.person.update();
+
+            //Only allow steps when you haven't tripped
+            if(!this.justTripped) {
+
+                //Left step check
+                if(!this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA)) {
+                    this.lastLeftStep = this.frameCounter;
+                    this.moveForward();
+                    this.movedLeft = true;
+                    this.movedRight = false;
+                    console.log('left step');
+                } else if(this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA)) { //Double A press causes trip
+                    this.doTrip(false, true);
+                    this.justTripped = true;
+                    this.takeDmg(1);
+                }
+
+                //Right step check
+                if(!this.movedRight && Phaser.Input.Keyboard.JustDown(keyD)) {
+                    this.lastRightStep = this.frameCounter;
+                    this.moveForward();
+                    this.movedRight = true;
+                    this.movedLeft = false;
+                    console.log('right step');
+                } else if(this.movedRight && Phaser.Input.Keyboard.JustDown(keyD)) { //Double D press causes trip
+                    this.doTrip(false, true);
+                    this.justTripped = true;
+                    this.takeDmg(1);
+                }
+            }
+
+            //Get up after tripping by pressing SPACE
+            if(this.justTripped && Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                this.moveForward();
+                this.lastLeftStep += this.tripSpeed + 1;
+                this.justTripped = false;
+                this.movedRight = false;
+                this.movedLeft = false;
+            }
+
+            //Speed Check
+            if(Math.abs(this.lastRightStep - this.lastLeftStep) != 0 && Math.abs(this.lastRightStep - this.lastLeftStep) < this.tripSpeed && !this.justTripped) {
+                this.doTrip(true, false);
+                this.takeDmg(1);
+                this.justTripped = true;
+            }
+
+            //Update score
+            this.distanceSteps.setText(this.stepsTraveled + ' steps');
+
+            }
+        
+        //Press R to restart, once you get a gameOver
+        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            this.scene.restart();
         }
 
-        //Right step check
-        if(!this.movedRight && Phaser.Input.Keyboard.JustDown(keyD) && !this.justTripped) {
-            this.lastRightStep = this.frameCounter;
-            this.moveForward();
-            this.movedRight = true;
-            this.movedLeft = false;
-            console.log('right step');
-        } else if(this.movedRight && Phaser.Input.Keyboard.JustDown(keyD) && !this.justTripped) {
-            this.doTrip(false, true);
-            this.justTripped = true;
+
+        
+        //CHEAT CODES:
+
+        //Press G to trigger gameOver
+        if(Phaser.Input.Keyboard.JustDown(keyG)) {
+            this.doGameOver();
         }
 
-        //Get up after tripping by pressing SPACE
-        if(this.justTripped && Phaser.Input.Keyboard.JustDown(keySPACE)) {
-            this.moveForward();
-            this.lastLeftStep += this.tripSpeed + 1;
-            this.justTripped = false;
-            this.movedRight = false;
-            this.movedLeft = false;
+        //Press Z to subtract 1 from playerHealth
+        if(Phaser.Input.Keyboard.JustDown(keyZ)) {
+            this.takeDmg(1);
+            console.log('playerHealth = ' + this.playerHealth);
         }
-
-        //Speed Check
-        if(Math.abs(this.lastRightStep - this.lastLeftStep) != 0 && Math.abs(this.lastRightStep - this.lastLeftStep) < this.tripSpeed && !this.justTripped) {
-            this.doTrip(true, false);
-            this.justTripped = true;
-        }
-
-        //Update score
-        this.distanceSteps.setText(this.stepsTravelled + ' steps');
-
     }
 }
