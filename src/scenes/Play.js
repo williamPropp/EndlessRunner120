@@ -15,10 +15,13 @@ class Play extends Phaser.Scene {
         this.load.image('HB4', 'HB4.png');
         this.load.image('enemy', 'person.jpg');
         this.load.image('player', 'Player.png');
+        this.load.image('cross', 'EW_Crosswalk.png');
     }
 
     moveForward() {
         this.bg.tilePositionX += 16;
+        this.crosswalk.x -= 15;
+        this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
     }
 
@@ -110,6 +113,10 @@ class Play extends Phaser.Scene {
         //Add background
         this.bg = this.add.tileSprite(-375, 200, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
         this.bg.angle = -20;
+
+        //Create crosswalk
+        this.crosswalk = this.add.tileSprite(195, 167, 222, 795, 'cross').setOrigin(0,0);
+        this.crosswalk.angle = -57;
 
         //Add health bar
         this.hb1 = this.add.tileSprite(20, 20, 240, 51, 'HB1').setOrigin(0,0);
