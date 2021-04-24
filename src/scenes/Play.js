@@ -22,13 +22,29 @@ class Play extends Phaser.Scene {
         this.stepsTraveled += 1;
     }
 
-    doTrip(tooFast, repeat) {
-        if(tooFast) {
+    doStrafe(direction) {
+            if(direction == 'left' && this.player.y > this.swLeftBorder) {
+                this.player.y -= this.strafeDistance;
+                this.player.x -= this.strafeDistance;
+                console.log('you strafed left');
+            } else if(direction == 'right' && this.player.y < this.swRightBorder) {
+                this.player.y += this.strafeDistance;
+                this.player.x += this.strafeDistance;
+                console.log('you strafed right');
+            }
+    }
+
+
+    doTrip(fastOrRepeat) {
+        if(fastOrRepeat == 'fast') {
             console.log('you walked too fast, and you tripped');
-        }
-        if(repeat) {
+        } else if(fastOrRepeat == 'repeat') {
             console.log('you forgot how to walk, and you tripped');
         }
+
+        this.player.angle = 90;
+        this.player.x += 180; //Correct x, y after rotation
+        this.player.y += 80;
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
@@ -52,8 +68,6 @@ class Play extends Phaser.Scene {
             for(let hbRemove of hbArray) { //Make all remaining hb  in the array invisible
                 hbRemove.alpha = 0;
             }
-        } else { //If playerHealth ever goes over the max, reduce it to max
-            this.playerHealth = this.playerHealthMax;
         }
     }
 
@@ -69,12 +83,18 @@ class Play extends Phaser.Scene {
         this.playerHealthMax = 4;
         this.playerHealth = this.playerHealthMax;
         this.frameCounter = 0;
-        this.lastLeftStep = 0;
+        this.lastLeftStep = 0; //Frame # when you last took a step
         this.lastRightStep = 0;
-        this.tripSpeed = 10;
+        this.tripSpeed = 10; //Minimum frames inbetween steps that causes trip
         this.stepsTraveled = 0;
-        this.playerX = game.config.width / 2;
-        this.playerY = ((game.config.height / 4) * 2) + 30;
+        this.strafeDistance = 8; //How far to strafe when player presses keyLEFT, or keyRIGHT
+        this.moveDistance = 16; //How far to mave when player takes a step
+
+        //Initialize location variables
+        this.playerInitX = game.config.width / 2; //Initial Player x, y
+        this.playerInitY = ((game.config.height / 4) * 2) + 30;
+        this.swLeftBorder = this.playerInitY - 40; //sidewalk borders
+        this.swRightBorder = this.playerInitY + 20;
 
         
         //Initialize UI coordinate variables
@@ -107,7 +127,7 @@ class Play extends Phaser.Scene {
         this.person = new Enemy(this, game.config.width , game.config.height , 'enemy').setOrigin(0,0);
 
         //Create character
-        this.player = this.add.sprite(this.playerX, this.playerY, 'player').setOrigin(0,0);
+        this.player = this.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
          
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -141,7 +161,7 @@ class Play extends Phaser.Scene {
                     this.movedRight = false;
                     console.log('left step');
                 } else if(this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA)) { //Double A press causes trip
-                    this.doTrip(false, true);
+                    this.doTrip('repeat');
                     this.justTripped = true;
                     this.takeDmg(1);
                 }
@@ -154,26 +174,41 @@ class Play extends Phaser.Scene {
                     this.movedLeft = false;
                     console.log('right step');
                 } else if(this.movedRight && Phaser.Input.Keyboard.JustDown(keyD)) { //Double D press causes trip
-                    this.doTrip(false, true);
+                    this.doTrip('repeat');
                     this.justTripped = true;
                     this.takeDmg(1);
                 }
+
+                //Speed Check
+                if(Math.abs(this.lastRightStep - this.lastLeftStep) != 0 && Math.abs(this.lastRightStep - this.lastLeftStep) < this.tripSpeed && !this.justTripped) {
+                    this.doTrip('fast');
+                    this.takeDmg(1);
+                    this.justTripped = true;
+                }
+
+                //Strafe Left
+                if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+                    this.doStrafe('left');
+                }
+
+                //Strafe Right
+                if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+                    this.doStrafe('right');
+                }
+
             }
 
             //Get up after tripping by pressing SPACE
             if(this.justTripped && Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                this.player.angle = 0;
+                this.player.x -= 180; //Correct x, y after rotation
+                this.player.y -= 80;
+
                 this.moveForward();
                 this.lastLeftStep += this.tripSpeed + 1;
                 this.justTripped = false;
                 this.movedRight = false;
                 this.movedLeft = false;
-            }
-
-            //Speed Check
-            if(Math.abs(this.lastRightStep - this.lastLeftStep) != 0 && Math.abs(this.lastRightStep - this.lastLeftStep) < this.tripSpeed && !this.justTripped) {
-                this.doTrip(true, false);
-                this.takeDmg(1);
-                this.justTripped = true;
             }
 
             //Update score
