@@ -124,7 +124,8 @@ class Play extends Phaser.Scene {
         this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTraveled + ' steps', distanceTextConfig);
 
         //Create enemy
-        this.person = new Enemy(this, game.config.width , game.config.height , 'enemy').setOrigin(0,0);
+        this.person = new Enemy(this, game.config.width - 150 , -90 , 'enemy').setOrigin(0,0);
+        this.person2 = new Enemy(this, game.config.width - 50 , 200 , 'enemy').setOrigin(0,0);        
 
         //Create character
         this.player = this.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
@@ -149,6 +150,7 @@ class Play extends Phaser.Scene {
 
             //Update enemy movement
             this.person.update();
+            this.person2.update();
 
             //Only allow steps when you haven't tripped
             if(!this.justTripped) {
