@@ -215,7 +215,7 @@ class Play extends Phaser.Scene {
                 this.player.y -= 80;
 
                 this.moveForward();
-                this.lastLeftStep += this.tripSpeed + 1;
+                this.lastLeftStep -= 2 * this.tripSpeed;
                 this.justTripped = false;
                 this.movedRight = false;
                 this.movedLeft = false;
