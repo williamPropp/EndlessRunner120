@@ -23,6 +23,8 @@ class Play extends Phaser.Scene {
         this.crosswalk.x -= 15;
         this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
+        this.person.x -= 15;
+        this.person.y += 5.5;
         console.log(this.crosswalk.y - this.player.y)
     }
 
@@ -49,6 +51,27 @@ class Play extends Phaser.Scene {
         this.player.angle = 90;
         this.player.x += 180; //Correct x, y after rotation
         this.player.y += 80;
+    }
+
+    //Spawn enemy on either side of the street
+    spawnEnemy() {
+        let rnd = Math.floor(Math.random() * 2);
+        if(rnd == 0){
+            console.log('emeny spawned on right sidewalk');
+            return new Enemy(this, game.config.width, 0 , 'enemy').setOrigin(0,0);
+        } else  if(rnd == 1){
+            console.log('emeny spawned on left sidewalk');
+            return new Enemy(this, game.config.width - 200, 0 , 'enemy').setOrigin(0,0);
+        }
+    }
+
+    //Test if 2 sprite objects are colliding with eachother, returns boolean
+    collisionTest(obj1, obj2) {
+        if(obj1.x <= (obj2.x + obj2.width) &&  obj1.x >= obj2.x && obj1.y <= (obj2.y + obj2.height) &&  obj1.x >= obj2.y) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
@@ -99,6 +122,8 @@ class Play extends Phaser.Scene {
         this.playerInitY = ((game.config.height / 4) * 2) + 30;
         this.swLeftBorder = this.playerInitY - 40; //sidewalk borders
         this.swRightBorder = this.playerInitY + 20;
+        this.enemyInitX = game.config.width;
+        this.enemyInitY = 0;
 
         
         //Initialize UI coordinate variables
@@ -131,11 +156,11 @@ class Play extends Phaser.Scene {
         this.distanceTravelledText = this.add.text(this.distanceTextX, this.distanceTextY, 'Distance Travelled:', distanceTextConfig);
         this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTraveled + ' steps', distanceTextConfig);
 
-        //Create enemy
-        this.person = new Enemy(this, game.config.width , game.config.height , 'enemy').setOrigin(0,0);
-
         //Create character
         this.player = this.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
+
+        //Create enemy
+        this.person = new Enemy(this, this.enemyInitX, this.enemyInitY, 'enemy').setOrigin(0,0);
          
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -147,6 +172,7 @@ class Play extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+        keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
     }
 
@@ -206,6 +232,12 @@ class Play extends Phaser.Scene {
                     this.doStrafe('right');
                 }
 
+                //Reset enemy position if they exit the screen
+                if(this.person.x + this.person.width < 1) {
+                    this.person.x = this.enemyInitX;
+                    this.person.y = this.enemyInitY;
+                }
+
             }
 
             //Get up after tripping by pressing SPACE
@@ -215,13 +247,14 @@ class Play extends Phaser.Scene {
                 this.player.y -= 80;
 
                 this.moveForward();
-                this.lastLeftStep -= 2 * this.tripSpeed;
+                this.lastLeftStep = 0;
+                this.lastRightStep = this.tripSpeed * 2;
                 this.justTripped = false;
                 this.movedRight = false;
                 this.movedLeft = false;
             }
 
-            //
+            //Crosswalk logic
             if (this.crosswalk.y + this.player.y > 630 &&
                 690 > this.crosswalk.y + this.player.y &&
                 this.player.y >= 350 && 
@@ -272,6 +305,11 @@ class Play extends Phaser.Scene {
         //Press G to trigger gameOver
         if(Phaser.Input.Keyboard.JustDown(keyG)) {
             this.doGameOver();
+        }
+
+        //Press X to spawn enemy
+        if(Phaser.Input.Keyboard.JustDown(keyX)) {
+            this.spawnEnemy();
         }
 
         //Press Z to subtract 1 from playerHealth

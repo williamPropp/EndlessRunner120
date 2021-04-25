@@ -19,6 +19,7 @@ class Menu extends Phaser.Scene {
 
         //Define keys
         this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+        this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
     }
 
@@ -27,6 +28,11 @@ class Menu extends Phaser.Scene {
         //Start game when F is pressed
         if(this.keyF.isDown) {
             this.scene.start("playScene");
+        }
+
+        //Show tutorial when R is pressed
+        if(this.keyR.isDown) {
+            this.scene.start("tutorialScene");
         }
     }
 }
