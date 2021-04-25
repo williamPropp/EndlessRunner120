@@ -23,6 +23,7 @@ class Play extends Phaser.Scene {
         this.crosswalk.x -= 15;
         this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
+        console.log(this.crosswalk.y - this.player.y)
     }
 
     doStrafe(direction) {
@@ -131,8 +132,7 @@ class Play extends Phaser.Scene {
         this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTraveled + ' steps', distanceTextConfig);
 
         //Create enemy
-        this.person = new Enemy(this, game.config.width - 150 , -90 , 'enemy').setOrigin(0,0);
-        this.person2 = new Enemy(this, game.config.width - 50 , 200 , 'enemy').setOrigin(0,0);        
+        this.person = new Enemy(this, game.config.width , game.config.height , 'enemy').setOrigin(0,0);
 
         //Create character
         this.player = this.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
@@ -143,6 +143,8 @@ class Play extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
         keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -157,7 +159,6 @@ class Play extends Phaser.Scene {
 
             //Update enemy movement
             this.person.update();
-            this.person2.update();
 
             //Only allow steps when you haven't tripped
             if(!this.justTripped) {
@@ -218,6 +219,40 @@ class Play extends Phaser.Scene {
                 this.justTripped = false;
                 this.movedRight = false;
                 this.movedLeft = false;
+            }
+
+            //
+            if (this.crosswalk.y + this.player.y > 630 &&
+                690 > this.crosswalk.y + this.player.y &&
+                this.player.y >= 350 && 
+                Phaser.Input.Keyboard.JustDown(keyUP)) {
+                    // this.swLeftBorder = 100;
+                    // this.swRightBorder = this.playerInitY + 20;
+                    // this.swRightBorder = 155;
+                //^walk across (still buggy) or v teleport
+                    this.player.y -= 285;
+                    this.player.x -= 200;
+                    this.swLeftBorder = 100;
+                    this.swRightBorder = this.playerInitY + 20;
+            } 
+            if (this.player.x < 441 &&
+                this.player.x > 184 &&
+                this.crosswalk.y - this.player.y > 67 &&
+                this.crosswalk.y - this.player.y < 145 &&
+                Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+                    // this.swLeftBorder = this.playerInitY - 40; //sidewalk borders
+                    // this.swRightBorder = this.playerInitY + 20;
+            //^walk across (still buggy) or v teleport
+                this.player.x = this.playerInitX
+                this.player.y = this.playerInitY + 20
+                this.swLeftBorder = this.playerInitY - 30; //sidewalk borders
+                this.swRightBorder = this.playerInitY + 25;
+            }
+       
+            //reset crosswalk
+            if(this.crosswalk.x <= -660){
+                this.crosswalk.x = 750;
+                this.crosswalk.y = -35;
             }
 
             //Update score
