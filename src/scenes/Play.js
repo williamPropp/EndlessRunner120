@@ -16,6 +16,7 @@ class Play extends Phaser.Scene {
         this.load.image('enemy', 'person.jpg');
         this.load.image('player', 'Player.png');
         this.load.image('cross', 'EW_Crosswalk.png');
+        //this.load.spritesheet('playerLeftStep', 'assets/playerAtlas.png', {frameWidth: 55, frameHeight: 150, startFrame: 0, endFrame: 3});
     }
 
     moveForward() {
@@ -48,7 +49,7 @@ class Play extends Phaser.Scene {
             console.log('you forgot how to walk, and you tripped');
         }
 
-        this.player.angle = 90;
+        this.player.angle = 90; //Make player 'trip'
         this.player.x += 180; //Correct x, y after rotation
         this.player.y += 80;
     }
@@ -57,11 +58,15 @@ class Play extends Phaser.Scene {
     spawnEnemy() {
         let rnd = Math.floor(Math.random() * 2);
         if(rnd == 0){
-            console.log('emeny spawned on right sidewalk');
-            return new Enemy(this, game.config.width, 0 , 'enemy').setOrigin(0,0);
-        } else  if(rnd == 1){
-            console.log('emeny spawned on left sidewalk');
-            return new Enemy(this, game.config.width - 200, 0 , 'enemy').setOrigin(0,0);
+            console.log('enemy spawned on right sidewalk');
+            let newEnemyRight = new Enemy(this, game.config.width, 0 , 'enemy').setOrigin(0,0);
+            this.enemies.add(newEnemyRight);
+            //return new Enemy(this, game.config.width, 0 , 'enemy').setOrigin(0,0);
+        } else if(rnd == 1){
+            console.log('enemy spawned on left sidewalk');
+            let newEnemyLeft = new Enemy(this, game.config.width - 200, 0 , 'enemy').setOrigin(0,0);
+            this.enemies.add(newEnemyLeft);
+            //return new Enemy(this, game.config.width - 200, 0 , 'enemy').setOrigin(0,0);
         }
     }
 
@@ -157,10 +162,24 @@ class Play extends Phaser.Scene {
         this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTraveled + ' steps', distanceTextConfig);
 
         //Create character
+        //this.anims.create({ key: 'playerAtlas', frames: this.anims.generateFrameNumbers('playerAtlas', { start: 0, end: 0, first: 0}), frameRate: 15 });
         this.player = this.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
 
-        //Create enemy
-        this.person = new Enemy(this, this.enemyInitX, this.enemyInitY, 'enemy').setOrigin(0,0);
+        //Create enemy group
+        this.enemies = this.add.group({
+            classType: Phaser.GameObjects.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: -1, //max group size might be useful
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null
+        });
+
+        //Create one enemy
+        //this.person = new Enemy(this, this.enemyInitX, this.enemyInitY, 'enemy').setOrigin(0,0);
          
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -184,7 +203,12 @@ class Play extends Phaser.Scene {
         if(!this.gameOver) {
 
             //Update enemy movement
-            this.person.update();
+            //this.person.update();
+
+            //Update enemy group movement
+            for(let enemy of this.enemies.getChildren()) {
+                enemy.update();
+            }
 
             //Only allow steps when you haven't tripped
             if(!this.justTripped) {
@@ -195,6 +219,7 @@ class Play extends Phaser.Scene {
                     this.moveForward();
                     this.movedLeft = true;
                     this.movedRight = false;
+                    //this.player.setFrame(2); //play left leg frame
                     console.log('left step');
                 } else if(this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA)) { //Double A press causes trip
                     this.doTrip('repeat');
@@ -208,6 +233,7 @@ class Play extends Phaser.Scene {
                     this.moveForward();
                     this.movedRight = true;
                     this.movedLeft = false;
+                    //this.player.setFrame(1); //play right leg frame
                     console.log('right step');
                 } else if(this.movedRight && Phaser.Input.Keyboard.JustDown(keyD)) { //Double D press causes trip
                     this.doTrip('repeat');
@@ -233,10 +259,10 @@ class Play extends Phaser.Scene {
                 }
 
                 //Reset enemy position if they exit the screen
-                if(this.person.x + this.person.width < 1) {
-                    this.person.x = this.enemyInitX;
-                    this.person.y = this.enemyInitY;
-                }
+                // if(this.person.x + this.person.width < 1) {
+                //     this.person.x = this.enemyInitX;
+                //     this.person.y = this.enemyInitY;
+                // }
 
             }
 
