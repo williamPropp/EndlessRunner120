@@ -7,7 +7,7 @@ class Play extends Phaser.Scene {
     preload() {
         //Load all assets
         this.load.path = './assets/';
-        this.load.image('background', 'EW_bg_flipped.png');
+        this.load.image('background', 'Background.png');
         this.load.image('HBoverlay', 'HBoverlay.png');
         this.load.image('HB1', 'HB1.png');
         this.load.image('HB2', 'HB2.png');
@@ -142,11 +142,11 @@ class Play extends Phaser.Scene {
         this.justTripped = false;
 
         //Add background
-        this.bg = this.add.tileSprite(-375, 200, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
+        this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
         this.bg.angle = -20;
 
         //Create crosswalk
-        this.crosswalk = this.add.tileSprite(195, 167, 222, 795, 'cross').setOrigin(0,0);
+        this.crosswalk = this.add.tileSprite(220, 165, 222, 795, 'cross').setOrigin(0,0);
         this.crosswalk.angle = -57;
 
         //Add health bar
@@ -291,8 +291,8 @@ class Play extends Phaser.Scene {
                 //^walk across (still buggy) or v teleport
                     this.player.y -= 285;
                     this.player.x -= 200;
-                    this.swLeftBorder = 100;
-                    this.swRightBorder = this.playerInitY + 20;
+                    this.swLeftBorder = 80;
+                    this.swRightBorder = 130;
             } 
             if (this.player.x < 441 &&
                 this.player.x > 184 &&
@@ -310,8 +310,8 @@ class Play extends Phaser.Scene {
        
             //reset crosswalk
             if(this.crosswalk.x <= -660){
-                this.crosswalk.x = 750;
-                this.crosswalk.y = -35;
+                this.crosswalk.x = 740;
+                this.crosswalk.y = -25;
             }
 
             //Update score
