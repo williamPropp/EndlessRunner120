@@ -24,8 +24,8 @@ class Play extends Phaser.Scene {
         this.crosswalk.x -= 15;
         this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
-        this.person.x -= 15;
-        this.person.y += 5.5;
+        //this.person.x -= 15;
+        //this.person.y += 5.5;
         console.log(this.crosswalk.y - this.player.y)
     }
 
