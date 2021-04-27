@@ -5,11 +5,12 @@ class Enemy extends Phaser.GameObjects.Sprite {
         //Add object to existing scene
         scene.add.existing(this);
         this.movementSpeed = 1;
-        this.setScale(.3);
+        this.scaleY = .25;
+        this.scaleX = .12;
     }
 
     update() {
-        this.x -= this.movementSpeed*2.6;
+        this.x -= this.movementSpeed*2.75;
         this.y += this.movementSpeed;
         if(this.x < -1 * (this.width)) {
             this.destroy()
