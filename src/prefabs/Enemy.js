@@ -5,15 +5,63 @@ class Enemy extends Phaser.GameObjects.Sprite {
         //Add object to existing scene
         scene.add.existing(this);
         this.movementSpeed = 1;
-        //this.scaleY = .25;
-        //this.scaleX = .12;
+        this.changeDir = false;
+        this.goingLeft = false;
+        this.goingRight = false;
     }
 
     update() {
         this.x -= this.movementSpeed*2.75;
         this.y += this.movementSpeed;
+
+        //If enemies leave screen, they are destroyed
         if(this.x < -1 * (this.width)) {
             this.destroy()
         }
+
+        let rndPath = Math.floor(Math.random() * 2);
+        if(rndPath == 1) {
+            this.x += this.movementSpeed*2.75;
+            this.y += this.movementSpeed;
+        } else if(rndPath == 0) {
+            this.x -= this.movementSpeed*2.75;
+            this.y -= this.movementSpeed;
+        }
+
+        // if(this.goingLeft) {
+        //     this.x -= this.movementSpeed*2.75;
+        //     this.y -= this.movementSpeed;
+        //     if(this.x < game.config.width + 290) {
+        //         this.goingRight = false;
+        //     }
+        // } else if(this.goingRight) {
+        //     this.x += this.movementSpeed*2.75;
+        //     this.y += this.movementSpeed;
+        //     if(this.x < game.config.width + 290) {
+        //         this.goingRight = false;
+        //     }
+        // }
+
+        // if(this.ChangeDir) {
+        //     this.changeDir = false;
+        //     if(this.goingLeft) {
+        //         this.x += this.movementSpeed*2.75;
+        //         this.y += this.movementSpeed;
+        //         if(this.x <= ) {
+        //             this.goingLeft = false;
+        //         }
+        //     } else if(this.goingRight) {
+        //         this.goingRight = false;
+        //         this.x -= this.movementSpeed*2.75;
+        //         this.y -= this.movementSpeed;
+        //         if(this.x >= swBorder) {
+        //             this.goingLeft = false;
+        //         }
+        //     }
+        //}
+    }
+
+    switchDirection() {
+        this.changeDir = true;
     }
 }
