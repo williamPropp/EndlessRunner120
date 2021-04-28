@@ -13,7 +13,8 @@ class Play extends Phaser.Scene {
         this.load.image('HB2', 'HB2.png');
         this.load.image('HB3', 'HB3.png');
         this.load.image('HB4', 'HB4.png');
-        this.load.image('enemy', 'person.jpg');
+        //this.load.image('enemy', 'person.jpg');
+        this.load.image('enemy', 'enemy.png');
         this.load.image('player', 'Player.png');
         this.load.image('cross', 'EW_Crosswalk.png');
         //this.load.spritesheet('playerLeftStep', 'assets/playerAtlas.png', {frameWidth: 55, frameHeight: 150, startFrame: 0, endFrame: 3});
@@ -86,15 +87,15 @@ class Play extends Phaser.Scene {
         // } else {
         //     return false;
         // }    
-        // if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
-        //     return true;
-        // } else {
-        //     return false;
-        // }
+        if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
+            return true;
+        } else {
+            return false;
+        }
         //console.log('obj1.y is higher than obj2\'s bottom? : ' + (obj1.y <= obj2.y + obj2.height)); //DELETE LATER!!!!
-        console.log('top and bottom of enemy : ' + (obj2.y) + ' ' + (obj2.y+ obj2.height));
+        //console.log('top and bottom of enemy : ' + (obj2.y) + ' ' + (obj2.y+ obj2.height));
         //console.log('obj1.y is lower than obj2\'s top? : ' + (obj1.y >= obj2.y)); //DELETE LATER!!!! WORKS!!!!!!!
-        return false;
+        //return false;
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
