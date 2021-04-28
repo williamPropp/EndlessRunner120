@@ -64,14 +64,14 @@ class Play extends Phaser.Scene {
         let rnd = Math.floor(Math.random() * 2);
         if(rnd == 0){
             console.log('enemy spawned on right sidewalk');
-            let rndX = Math.floor(Math.random() * 275);
-            let newEnemyRight = new Enemy(this, game.config.width + rndX, 185, 'enemy').setOrigin(0,0);
+            let rndX = Math.floor(Math.random() * 283);
+            let newEnemyRight = new Enemy(this, game.config.width + 290 + rndX, 50, 'enemy').setOrigin(0,0);
             this.enemies.add(newEnemyRight);
             //return new Enemy(this, game.config.width, 0 , 'enemy').setOrigin(0,0);
         } else if(rnd == 1){
             console.log('enemy spawned on left sidewalk');
-            let rndX = Math.floor(Math.random() * 308);
-            let newEnemyLeft = new Enemy(this, game.config.width - 120 + rndX, -130 , 'enemy').setOrigin(0,0);
+            let rndX = Math.floor(Math.random() * 284);
+            let newEnemyLeft = new Enemy(this, game.config.width - 120 + rndX, -150 , 'enemy').setOrigin(0,0);
             this.enemies.add(newEnemyLeft);
             //return new Enemy(this, game.config.width - 200, 0 , 'enemy').setOrigin(0,0);
         }
