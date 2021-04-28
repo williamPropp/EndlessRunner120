@@ -26,6 +26,10 @@ class Play extends Phaser.Scene {
         this.stepsTraveled += 1;
         //this.person.x -= 15;
         //this.person.y += 5.5;
+        for(let enemy of this.enemies.getChildren()) {
+            enemy.x -= 15;
+            enemy.x += 5.5;
+        }
         console.log(this.crosswalk.y - this.player.y)
     }
 
@@ -74,11 +78,23 @@ class Play extends Phaser.Scene {
 
     //Test if 2 sprite objects are colliding with eachother, returns boolean
     collisionTest(obj1, obj2) {
-        if(obj1.x <= (obj2.x + obj2.width) &&  obj1.x >= obj2.x && obj1.y <= (obj2.y + obj2.height) &&  obj1.x >= obj2.y) {
-            return true;
-        } else {
-            return false;
-        }
+        // if((obj1.x <= (obj2.x + obj2.width)) &&
+        //   (obj1.x >= obj2.x) && 
+        //   ((obj1.y + ((obj1.height / 3) * 2)) <= (obj2.y + obj2.height)) &&  
+        //   (obj1.y + obj1.height >= obj2.y + ((obj2.height / 3) * 2))) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }    
+        // if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+        //console.log('obj1.y is higher than obj2\'s bottom? : ' + (obj1.y <= obj2.y + obj2.height)); //DELETE LATER!!!!
+        console.log('top and bottom of enemy : ' + (obj2.y) + ' ' + (obj2.y+ obj2.height));
+        //console.log('obj1.y is lower than obj2\'s top? : ' + (obj1.y >= obj2.y)); //DELETE LATER!!!! WORKS!!!!!!!
+        return false;
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
@@ -142,6 +158,7 @@ class Play extends Phaser.Scene {
         this.movedLeft = false;
         this.movedRight = false;
         this.justTripped = false;
+        this.justCollided = false;
 
         //Add background
         this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
@@ -181,7 +198,7 @@ class Play extends Phaser.Scene {
         });
 
         //Create one enemy
-        //this.person = new Enemy(this, this.enemyInitX, this.enemyInitY, 'enemy').setOrigin(0,0);
+        //this.person = new Enemy(this, game.config.width / 2, 0, 'enemy').setOrigin(0,0);
          
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -207,9 +224,15 @@ class Play extends Phaser.Scene {
             //Update enemy movement
             //this.person.update();
 
-            //Update enemy group movement
+            //Update enemy group movement and test collision
             for(let enemy of this.enemies.getChildren()) {
                 enemy.update();
+                if(this.collisionTest(this.player,enemy) && !this.justCollided){
+                    console.log('collision triggered')
+                    this.takeDmg(1);
+                    this.justCollided = true;
+                }
+                
             }
 
             //Only allow steps when you haven't tripped
@@ -338,6 +361,7 @@ class Play extends Phaser.Scene {
         //Press X to spawn enemy
         if(Phaser.Input.Keyboard.JustDown(keyX)) {
             this.spawnEnemy();
+            this.justCollided = false;
         }
 
         //Press Z to subtract 1 from playerHealth
