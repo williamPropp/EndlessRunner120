@@ -86,16 +86,13 @@ class Play extends Phaser.Scene {
         //     return true;
         // } else {
         //     return false;
-        // }    
+        // }
+        console.log('player x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height) + '\n enemy x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height));    
         if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
             return true;
         } else {
             return false;
         }
-        //console.log('obj1.y is higher than obj2\'s bottom? : ' + (obj1.y <= obj2.y + obj2.height)); //DELETE LATER!!!!
-        //console.log('top and bottom of enemy : ' + (obj2.y) + ' ' + (obj2.y+ obj2.height));
-        //console.log('obj1.y is lower than obj2\'s top? : ' + (obj1.y >= obj2.y)); //DELETE LATER!!!! WORKS!!!!!!!
-        //return false;
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
