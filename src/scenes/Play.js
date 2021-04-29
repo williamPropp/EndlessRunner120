@@ -204,7 +204,7 @@ class Play extends Phaser.Scene {
         this.player = this.physics.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
 
         //Create enemy group
-        this.enemies = this.add.group({
+        this.enemies = this.physics.add.group({
             classType: Phaser.GameObjects.Sprite,
             defaultKey: null,
             defaultFrame: null,
