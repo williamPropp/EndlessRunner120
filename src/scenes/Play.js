@@ -81,15 +81,20 @@ class Play extends Phaser.Scene {
     }
 
     //Test if 2 sprite objects are colliding with eachother, returns boolean
-    collisionTest(obj1, obj2) {
-        //Uncomment this console.log() to see live updates of enemy x, y and area
-        //console.log('player x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height) + '\n enemy x,y,area: x=' + obj2.x + ', y=' + obj2.y + ', area = ' + (obj2.width * obj2.height));    
-        if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
-            //console.log('collision triggered');
-            return true;
-        } else {
-            return false;
-        }
+    // collisionTest(obj1, obj2) {
+    //     //Uncomment this console.log() to see live updates of enemy x, y and area
+    //     //console.log('player x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height) + '\n enemy x,y,area: x=' + obj2.x + ', y=' + obj2.y + ', area = ' + (obj2.width * obj2.height));    
+    //     if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
+    //         //console.log('collision triggered');
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    enemyCollide() {
+        this.justCollided = true;
+        this.takeDmg(1);
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
@@ -116,6 +121,10 @@ class Play extends Phaser.Scene {
         } else if(this.playerHealth > this.playerHealthMax) {
             this.playerHealth = this.playerHealthMax;
         }
+    }
+
+    writeEnemySpeech() {
+        //make enemy speech bubble with text happen when collisions occur
     }
 
     doGameOver() {
@@ -151,8 +160,6 @@ class Play extends Phaser.Scene {
         this.enemyInitBottomX = game.config.width + 290;
         this.enemyInitTopY = -150;
         this.enemyInitBottomY = 50;
-
-
         
         //Initialize UI coordinate variables
         this.distanceTextX = game.config.width - (game.config.width / 3);
@@ -165,6 +172,12 @@ class Play extends Phaser.Scene {
         this.justTripped = false;
         this.justCollided = false;
         this.spawnedEnemy = false;
+
+        //Create string arrays for speech bubbles
+        this.enemyInsults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
+        this.selfDeprecatingText = ['I\'m stupid', 'oh god why me', 'please no', ''];
+        this.sorryText = ['SORRY', 'omg I\'m so sorry', 'sorry', 'oops! sorry', 'oh no! sorry'];
+        this.doIKnowThatGuy = ['Wait, oh no, do I know him from somewhere?', 'shoot, is that Jerry??'];
 
         //Add background
         this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
@@ -188,7 +201,7 @@ class Play extends Phaser.Scene {
 
         //Create character
         //this.anims.create({ key: 'playerAtlas', frames: this.anims.generateFrameNumbers('playerAtlas', { start: 0, end: 0, first: 0}), frameRate: 15 });
-        this.player = this.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
+        this.player = this.physics.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
 
         //Create enemy group
         this.enemies = this.add.group({
@@ -203,14 +216,13 @@ class Play extends Phaser.Scene {
             createMultipleCallback: null
         });
 
+        //this.physics.add(this.enemies);
+
         //Spawn first enemy
         this.time.delayedCall(this.enemySpawnTime, () => {
             this.spawnEnemy();
             this.spawnedEnemy = false;
         });
-
-        //Create one enemy
-        //this.person = new Enemy(this, game.config.width / 2, 0, 'enemy').setOrigin(0,0);
          
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -227,8 +239,8 @@ class Play extends Phaser.Scene {
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
 
-        //Create Physics?
-        this.physics.add.overlap(this.player, this.enemies);
+        //Create overlap physics between player and enemies
+        this.physics.add.overlap(this.player, this.enemies, this.enemyCollide, null, this);
     }
 
     update() {
@@ -248,14 +260,14 @@ class Play extends Phaser.Scene {
             //Update enemy group movement and test collision
             for(let enemy of this.enemies.getChildren()) {
                 enemy.update();
-                if(this.collisionTest(this.player,enemy) && !this.justCollided){
-                    console.log('collision triggered')
-                    this.takeDmg(1);
-                    this.justCollided = true;
-                    this.time.delayedCall(this.enemySpawnTime, () => {
-                        this.justCollided = false;
-                    });
-                }
+                // if(this.collisionTest(this.player,enemy) && !this.justCollided){
+                //     console.log('collision triggered')
+                //     this.takeDmg(1);
+                //     this.justCollided = true;
+                //     this.time.delayedCall(this.enemySpawnTime, () => {
+                //         this.justCollided = false;
+                //     });
+                // }
                 if(this.numEnemies < this.maxEnemies && !this.spawnedEnemy) {
                     this.spawnedEnemy = true;
                     this.time.delayedCall(this.enemySpawnTime, () => {
