@@ -61,6 +61,11 @@ class Play extends Phaser.Scene {
 
     //Spawn enemy on either side of the street
     spawnEnemy() {
+        
+        //Randomize enemySpawnTime
+        this.enemySpawnTime = 2000 + Math.floor(Math.random() * 2000);
+
+        //50-50 chance of enemy spawning on right or left sidewalk
         let rnd = Math.floor(Math.random() * 2);
         if(rnd == 0){
             console.log('enemy spawned on right sidewalk');
@@ -133,7 +138,7 @@ class Play extends Phaser.Scene {
         this.moveDistance = 16; //How far to mave when player takes a step
         this.maxEnemies = 5;
         this.numEnemies = 0; //Number of Enemies currently in the scene
-        this.enemySpawnTime = 2500; //How many ms to spawn an enemy
+        this.enemySpawnTime = 2000; //How many ms to spawn an enemy
 
         //Initialize location variables
         this.playerInitX = game.config.width / 2; //Initial Player x, y
@@ -220,6 +225,10 @@ class Play extends Phaser.Scene {
         keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+
+
+        //Create Physics?
+        this.physics.add.overlap(this.player, this.enemies);
     }
 
     update() {
