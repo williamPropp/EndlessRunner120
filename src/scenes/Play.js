@@ -71,11 +71,14 @@ class Play extends Phaser.Scene {
             console.log('enemy spawned on right sidewalk');
             let rndX = Math.floor(Math.random() * 283);
             let newEnemyRight = new Enemy(this, this.enemyInitBottomX + rndX, this.enemyInitBottomY, 'enemy').setOrigin(0,0);
+            //this.physics.add.overlap(this.player, newEnemyRight, this.enemyCollide(newEnemyRight), null, this);
+
             this.enemies.add(newEnemyRight);
         } else if(rnd == 1){
             console.log('enemy spawned on left sidewalk');
             let rndX = Math.floor(Math.random() * 284);
             let newEnemyLeft = new Enemy(this, this.enemyInitTopX + rndX, this.enemyInitTopY , 'enemy').setOrigin(0,0);
+          //  this.physics.add.overlap(this.player, newEnemyLeft, this.enemyCollide(newEnemyLeft), null, this);
             this.enemies.add(newEnemyLeft);
         }
     }
@@ -92,9 +95,15 @@ class Play extends Phaser.Scene {
     //     }
     // }
 
-    enemyCollide() {
+    enemyCollide(enemy) {  
+        if(!this.justCollided){
+            this.takeDmg(1);
+        } 
         this.justCollided = true;
-        this.takeDmg(1);
+        this.time.delayedCall(1000, () => {
+            this.justCollided = false;
+        });
+        
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
@@ -244,7 +253,6 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-
         this.frameCounter++;
 
         //While gameOver = false
