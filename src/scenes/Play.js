@@ -13,11 +13,9 @@ class Play extends Phaser.Scene {
         this.load.image('HB2', 'HB2.png');
         this.load.image('HB3', 'HB3.png');
         this.load.image('HB4', 'HB4.png');
-        //this.load.image('enemy', 'person.jpg');
         this.load.image('enemy', 'enemy.png');
         this.load.image('player', 'Player.png');
         this.load.image('cross', 'EW_Crosswalk.png');
-        //this.load.spritesheet('playerLeftStep', 'assets/playerAtlas.png', {frameWidth: 55, frameHeight: 150, startFrame: 0, endFrame: 3});
     }
 
     moveForward() {
@@ -25,8 +23,6 @@ class Play extends Phaser.Scene {
         this.crosswalk.x -= 15;
         this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
-        //this.person.x -= 15;
-        //this.person.y += 5.5;
         for(let enemy of this.enemies.getChildren()) {
             enemy.x -= 15;
             enemy.x += 5.5;
@@ -80,26 +76,21 @@ class Play extends Phaser.Scene {
         }
     }
 
-    //Test if 2 sprite objects are colliding with eachother, returns boolean
-    // collisionTest(obj1, obj2) {
-    //     //Uncomment this console.log() to see live updates of enemy x, y and area
-    //     //console.log('player x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height) + '\n enemy x,y,area: x=' + obj2.x + ', y=' + obj2.y + ', area = ' + (obj2.width * obj2.height));    
-    //     if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
-    //         //console.log('collision triggered');
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
     enemyCollide() {
+        if(!this.justCollided) {
+            this.takeDmg(1);
+            console.log('collided with enemy and took damage');
+            this.time.delayedCall(1000, () => {
+                this.justCollided = false;
+            });
+        }
         this.justCollided = true;
-        this.takeDmg(1);
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
     takeDmg(value) {
         this.playerHealth -= value;
+        this.cameras.main.shake(0.01, 200);
         console.log('you took ' + value + ' damage, now playerHealth = ' + this.playerHealth);
 
         //Initialize array of hb sprites
@@ -123,7 +114,7 @@ class Play extends Phaser.Scene {
         }
     }
 
-    writeEnemySpeech() {
+    writeEnemySpeech(enemy) {
         //make enemy speech bubble with text happen when collisions occur
     }
 
@@ -216,8 +207,6 @@ class Play extends Phaser.Scene {
             createMultipleCallback: null
         });
 
-        //this.physics.add(this.enemies);
-
         //Spawn first enemy
         this.time.delayedCall(this.enemySpawnTime, () => {
             this.spawnEnemy();
@@ -250,24 +239,16 @@ class Play extends Phaser.Scene {
         //While gameOver = false
         if(!this.gameOver) {
 
-            //Update enemy movement
-            //this.person.update();
-
             this.numEnemies = this.enemies.getLength();
-            // console.log('numEnemies = ' + this.numEnemies);
-            // console.log('numEnemies < maxEnemies? : ' + (this.numEnemies < this.maxEnemies));
 
-            //Update enemy group movement and test collision
+            //Update enemy group movement and spawn more enemies every x milliseconds, where x = this.enemySpawnTime
             for(let enemy of this.enemies.getChildren()) {
                 enemy.update();
-                // if(this.collisionTest(this.player,enemy) && !this.justCollided){
-                //     console.log('collision triggered')
-                //     this.takeDmg(1);
-                //     this.justCollided = true;
-                //     this.time.delayedCall(this.enemySpawnTime, () => {
-                //         this.justCollided = false;
-                //     });
-                // }
+                //If enemies leave screen, they are destroyed
+                if(enemy.x < -1 * (enemy.width)) {
+                    this.enemies.remove(enemy); //Remove them from the group
+                    enemy.destroy(); //Then destroy them
+                }
                 if(this.numEnemies < this.maxEnemies && !this.spawnedEnemy) {
                     this.spawnedEnemy = true;
                     this.time.delayedCall(this.enemySpawnTime, () => {
@@ -413,3 +394,31 @@ class Play extends Phaser.Scene {
         }
     }
 }
+
+
+
+
+
+//POLLING BASED VERSION OF ENEMY COLLISION DETECTION
+
+//Test if 2 sprite objects are colliding with eachother, returns boolean
+// collisionTest(obj1, obj2) {
+//     //Uncomment this console.log() to see live updates of enemy x, y and area
+//     //console.log('player x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height) + '\n enemy x,y,area: x=' + obj2.x + ', y=' + obj2.y + ', area = ' + (obj2.width * obj2.height));    
+//     if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
+//         //console.log('collision triggered');
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
+
+//Run this every frame in update()
+// if(this.collisionTest(this.player,enemy) && !this.justCollided){
+//     console.log('collision triggered')
+//     this.takeDmg(1);
+//     this.justCollided = true;
+//     this.time.delayedCall(this.enemySpawnTime, () => {
+//         this.justCollided = false;
+//     });
+// }

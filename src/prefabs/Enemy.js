@@ -14,11 +14,6 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.x -= this.movementSpeed*2.75;
         this.y += this.movementSpeed;
 
-        //If enemies leave screen, they are destroyed
-        if(this.x < -1 * (this.width)) {
-            this.destroy()
-        }
-
         let rndPath = Math.floor(Math.random() * 2);
         if(rndPath == 1) {
             this.x += this.movementSpeed*2.75;
