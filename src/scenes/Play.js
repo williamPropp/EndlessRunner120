@@ -78,24 +78,13 @@ class Play extends Phaser.Scene {
             this.enemies.add(newEnemyLeft);
         }
     }
-
-    //Test if 2 sprite objects are colliding with eachother, returns boolean
-    // collisionTest(obj1, obj2) {
-    //     //Uncomment this console.log() to see live updates of enemy x, y and area
-    //     //console.log('player x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height) + '\n enemy x,y,area: x=' + obj2.x + ', y=' + obj2.y + ', area = ' + (obj2.width * obj2.height));    
-    //     if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
-    //         //console.log('collision triggered');
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    enemyCollide(enemy) {  
+    enemyCollide() {  
         if(!this.justCollided){
             this.takeDmg(1);
             this.time.delayedCall(1000, () => {
-                this.justCollided = false;
+                if(!this.gameOver) {
+                    this.justCollided = false;
+                }
             });
         } 
         this.justCollided = true;
@@ -248,11 +237,6 @@ class Play extends Phaser.Scene {
 
     update() {
         this.frameCounter++;
-
-        //Prevent infinite damage on game over
-        if(this.gameOver) {
-            this.justCollided = true;
-        }
 
         //While gameOver = false
         if(!this.gameOver) {
