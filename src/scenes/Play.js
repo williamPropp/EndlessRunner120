@@ -67,24 +67,39 @@ class Play extends Phaser.Scene {
             console.log('enemy spawned on right sidewalk');
             let rndX = Math.floor(Math.random() * 283);
             let newEnemyRight = new Enemy(this, this.enemyInitBottomX + rndX, this.enemyInitBottomY, 'enemy').setOrigin(0,0);
+            //this.physics.add.overlap(this.player, newEnemyRight, this.enemyCollide(newEnemyRight), null, this);
+
             this.enemies.add(newEnemyRight);
         } else if(rnd == 1){
             console.log('enemy spawned on left sidewalk');
             let rndX = Math.floor(Math.random() * 284);
             let newEnemyLeft = new Enemy(this, this.enemyInitTopX + rndX, this.enemyInitTopY , 'enemy').setOrigin(0,0);
+          //  this.physics.add.overlap(this.player, newEnemyLeft, this.enemyCollide(newEnemyLeft), null, this);
             this.enemies.add(newEnemyLeft);
         }
     }
 
-    enemyCollide() {
-        if(!this.justCollided) {
+    //Test if 2 sprite objects are colliding with eachother, returns boolean
+    // collisionTest(obj1, obj2) {
+    //     //Uncomment this console.log() to see live updates of enemy x, y and area
+    //     //console.log('player x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height) + '\n enemy x,y,area: x=' + obj2.x + ', y=' + obj2.y + ', area = ' + (obj2.width * obj2.height));    
+    //     if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
+    //         //console.log('collision triggered');
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    enemyCollide(enemy) {  
+        if(!this.justCollided){
             this.takeDmg(1);
-            console.log('collided with enemy and took damage');
-            this.time.delayedCall(1000, () => {
-                this.justCollided = false;
-            });
-        }
+        } 
         this.justCollided = true;
+        this.time.delayedCall(1000, () => {
+            this.justCollided = false;
+        });
+        
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
@@ -233,7 +248,6 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-
         this.frameCounter++;
 
         //While gameOver = false
