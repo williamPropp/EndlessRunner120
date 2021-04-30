@@ -1,0 +1,60 @@
+{"frames": [
+
+{
+	"filename": "Player_Left01.png",
+	"frame": {"x":0,"y":0,"w":56,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":56,"h":148},
+	"sourceSize": {"w":56,"h":148}
+},
+{
+	"filename": "Player_Left02.png",
+	"frame": {"x":0,"y":148,"w":56,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":56,"h":148},
+	"sourceSize": {"w":56,"h":148}
+},
+{
+	"filename": "Player_Left03.png",
+	"frame": {"x":0,"y":296,"w":56,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":56,"h":148},
+	"sourceSize": {"w":56,"h":148}
+},
+{
+	"filename": "Player_Right01.png",
+	"frame": {"x":0,"y":444,"w":56,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":56,"h":148},
+	"sourceSize": {"w":56,"h":148}
+},
+{
+	"filename": "Player_Right02.png",
+	"frame": {"x":0,"y":592,"w":56,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":56,"h":148},
+	"sourceSize": {"w":56,"h":148}
+},
+{
+	"filename": "Player_Right03.png",
+	"frame": {"x":0,"y":740,"w":56,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":56,"h":148},
+	"sourceSize": {"w":56,"h":148}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Player_Steps.png",
+	"format": "RGBA8888",
+	"size": {"w":56,"h":888},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:d15ef0f510da181eb8331a8f7548b66c:28740a82b5ebce99659409d21f299e64:b72e3e565dcc89d822913b4918c4b423$"
+}
+}
