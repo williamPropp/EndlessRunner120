@@ -15,7 +15,8 @@ class Play extends Phaser.Scene {
         this.load.image('HB4', 'HB4.png');
         this.load.image('enemy', 'enemy.png');
         this.load.image('player', 'Player.png');
-        this.load.image('cross', 'EW_Crosswalk.png');
+        this.load.image('cross', 'Crosswalk.png');
+        //this.load.spritesheet('playerLeftStep', 'assets/playerAtlas.png', {frameWidth: 55, frameHeight: 150, startFrame: 0, endFrame: 3});
     }
 
     moveForward() {
@@ -189,8 +190,8 @@ class Play extends Phaser.Scene {
         this.bg.angle = -20;
 
         //Create crosswalk
-        this.crosswalk = this.add.tileSprite(220, 165, 222, 795, 'cross').setOrigin(0,0);
-        this.crosswalk.angle = -57;
+        this.crosswalk = this.add.tileSprite(275, 201, 247, 368, 'cross').setOrigin(0,0);
+        this.crosswalk.angle = 6.5;
 
         //Add health bar
         this.hb1 = this.add.tileSprite(20, 20, 240, 51, 'HB1').setOrigin(0,0);
@@ -342,23 +343,20 @@ class Play extends Phaser.Scene {
             }
 
             //Crosswalk logic
-            if (this.crosswalk.y + this.player.y > 630 &&
-                690 > this.crosswalk.y + this.player.y &&
+            if (this.crosswalk.x + this.crosswalk.width/2 > this.player.x &&
+                this.crosswalk.x - this.crosswalk.width/2 < this.player.x &&
                 this.player.y >= 350 && 
                 Phaser.Input.Keyboard.JustDown(keyUP)) {
                     // this.swLeftBorder = 100;
                     // this.swRightBorder = this.playerInitY + 20;
                     // this.swRightBorder = 155;
                 //^walk across (still buggy) or v teleport
-                    this.player.y -= 285;
-                    this.player.x -= 200;
-                    this.swLeftBorder = 80;
-                    this.swRightBorder = 130;
+                    this.player.y -= 320;
+                    this.swLeftBorder = 20;
+                    this.swRightBorder = 75;
             } 
-            if (this.player.x < 441 &&
-                this.player.x > 184 &&
-                this.crosswalk.y - this.player.y > 67 &&
-                this.crosswalk.y - this.player.y < 145 &&
+            if (this.crosswalk.x + this.crosswalk.width/2 > this.player.x &&
+                this.crosswalk.x - this.crosswalk.width/2 < this.player.x &&
                 Phaser.Input.Keyboard.JustDown(keyDOWN)) {
                     // this.swLeftBorder = this.playerInitY - 40; //sidewalk borders
                     // this.swRightBorder = this.playerInitY + 20;
@@ -371,8 +369,8 @@ class Play extends Phaser.Scene {
        
             //reset crosswalk
             if(this.crosswalk.x <= -660){
-                this.crosswalk.x = 740;
-                this.crosswalk.y = -25;
+                this.crosswalk.x = 995;
+                this.crosswalk.y = -60;
             }
 
             //Update score
