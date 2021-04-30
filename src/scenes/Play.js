@@ -94,18 +94,17 @@ class Play extends Phaser.Scene {
     enemyCollide(enemy) {  
         if(!this.justCollided){
             this.takeDmg(1);
+            this.time.delayedCall(1000, () => {
+                this.justCollided = false;
+            });
         } 
         this.justCollided = true;
-        this.time.delayedCall(1000, () => {
-            this.justCollided = false;
-        });
-        
     }
 
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
     takeDmg(value) {
         this.playerHealth -= value;
-        this.cameras.main.shake(0.01, 200);
+        this.cameras.main.shake(200);
         console.log('you took ' + value + ' damage, now playerHealth = ' + this.playerHealth);
 
         //Initialize array of hb sprites
@@ -249,6 +248,11 @@ class Play extends Phaser.Scene {
 
     update() {
         this.frameCounter++;
+
+        //Prevent infinite damage on game over
+        if(this.gameOver) {
+            this.justCollided = true;
+        }
 
         //While gameOver = false
         if(!this.gameOver) {
