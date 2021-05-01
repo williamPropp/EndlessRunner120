@@ -1,4 +1,4 @@
-class Enemy extends Phaser.GameObjects.Sprite {
+class Enemy extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame/*, speechBubble*/) {
         super(scene, x, y, texture, frame/*, speechBubble*/);
 
@@ -13,15 +13,12 @@ class Enemy extends Phaser.GameObjects.Sprite {
         // this.speechBubble = scene.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble').setOrigin(0,0);
         // this.speechBubble = speechBubble;
         this.insultTextConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' };
-        this.enemyInsult = scene.add.text(this.x, this.y-20, this.genInsult(), this.insultTextConfig).setOrigin(0.5,0);
+        this.enemyInsult = scene.add.text(this.x-120, this.y-20, this.genInsult(), this.insultTextConfig).setOrigin(0.5,0);
         this.enemyInsult.alpha = 0;
        // this.speechBubble.alpha = 0;
-    }
 
-    // preload() {
-    //     this.load.path = './assets/';
-    //     this.load.image('speechBubble', 'Speech_Bubble.png')
-    // }
+        this.onCreate = true;
+    }
 
     genInsult() {
         let insults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!', '???']; //feel free to add more phrases
@@ -40,6 +37,13 @@ class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     update() {
+        //Change hitbox
+        if(this.onCreate) {
+            this.setSize(this.width, this.height/4, true);
+            this.setOffset(0, 110);
+            this.onCreate = false
+        }
+
         //Move Enemy
         this.x -= this.mvmtX;
         this.y += this.mvmtY;

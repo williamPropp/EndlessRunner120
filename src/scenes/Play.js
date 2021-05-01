@@ -72,41 +72,36 @@ class Play extends Phaser.Scene {
 
         //let bubble = this.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble')
 
+        let swOffsetX;
+        let swOffsetY;
+        let consoleTopBottom;
+        let consoleLeftRight;
+
+        //Set x and y for either top or bottom spawn
         if(rndTopBottom == 0){
-            if(rndLeftRight == 0) { 
-                let swOffsetX = 40;
-                //let swOffsetX = Math.floor(Math.random() * 283);
-                let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
-                this.enemies.add(newEnemyBottom);
-                newEnemyBottom.play('enemyWalk');
-                console.log('enemy spawned on bottom sidewalk, left side');
-            } else if(rndLeftRight == 1) {
-                let swOffsetX = 283;
-                //let swOffsetX = Math.floor(Math.random() * 283);
-                let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
-                this.enemies.add(newEnemyBottom);
-                newEnemyBottom.play('enemyWalk');
-                console.log('enemy spawned on bottom sidewalk, right side');
-            }
-            //console.log('enemy spawned on right sidewalk');
-        } else if(rndTopBottom == 1){
-            if(rndLeftRight == 0) {
-                let swOffsetX = 40;
-                // let swOffsetX = Math.floor(Math.random() * 284);
-                let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
-                this.enemies.add(newEnemyTop);
-                newEnemyTop.play('enemyWalk');
-                console.log('enemy spawned on top sidewalk, left side');
-            } else if(rndLeftRight == 1) {
-                let swOffsetX = 284;
-                // let swOffsetX = Math.floor(Math.random() * 284);
-                let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
-                this.enemies.add(newEnemyTop);
-                newEnemyTop.play('enemyWalk');
-                console.log('enemy spawned on top sidewalk, right side');
-            }
-            //console.log('enemy spawned on left sidewalk');
+            swOffsetY = this.enemyInitBottomY;
+            swOffsetX = this.enemyInitBottomX;
+            consoleTopBottom = 'enemy spawned on bottom sidewalk, ';
+        } else if(rndTopBottom == 1) {
+            swOffsetY = this.enemyInitTopY;
+            swOffsetX = this.enemyInitTopX;
+            consoleTopBottom = 'enemy spawned on top sidewalk, ';
         }
+
+        //Set x for either left or right spawn
+        if(rndLeftRight == 0) { 
+            swOffsetX += 50;
+            consoleLeftRight = 'left side';
+        } else if(rndLeftRight == 1) {
+            swOffsetX += 283;
+            consoleLeftRight = 'right side';
+        }
+
+        //Create new enemy, add them to the enemies group, and play walking animation
+        let newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
+        this.enemies.add(newEnemy);
+        newEnemy.play('enemyWalk');
+        console.log(consoleTopBottom + consoleLeftRight);
     }
 
     enemyCollide(player, enemy) {  
@@ -120,7 +115,7 @@ class Play extends Phaser.Scene {
                 }
 
                 this.sorryText = this.sorryArray[Math.floor(Math.random()*this.sorryArray.length)];
-                let sorry = this.add.text(this.playerInitX, this.playerInitY-20, this.sorryText, { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' }).setOrigin(0.5,0);
+                let sorry = this.add.text(this.playerInitX, this.playerInitY-40, this.sorryText, { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' }).setOrigin(0.5,0);
                 this.time.delayedCall(1500, () => {
                     sorry.destroy();
                 });
@@ -235,6 +230,8 @@ class Play extends Phaser.Scene {
         //Create character
         //this.anims.create({ key: 'playerAtlas', frames: this.anims.generateFrameNumbers('playerAtlas', { start: 0, end: 0, first: 0}), frameRate: 15 });
         this.player = this.physics.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
+        this.player.setBodySize(this.player.width, this.player.height/4, true);
+        this.player.setOffset(0, 110);
 
         //Create Animations
         this.anims.create({
@@ -325,11 +322,14 @@ class Play extends Phaser.Scene {
             //Update enemy group movement and spawn more enemies every x milliseconds, where x = this.enemySpawnTime
             for(let enemy of this.enemies.getChildren()) {
                 enemy.update();
+
                 //If enemies leave screen, they are destroyed
                 if(enemy.x < -1 * (enemy.width)) {
                     this.enemies.remove(enemy); //Remove them from the group
                     enemy.destroy(); //Then destroy them
                 }
+
+                //Only spawn an enemy if there are les enemies than the max
                 if(this.numEnemies < this.maxEnemies && !this.spawnedEnemy) {
                     this.spawnedEnemy = true;
                     this.time.delayedCall(this.enemySpawnTime, () => {
@@ -502,3 +502,35 @@ class Play extends Phaser.Scene {
 //         this.justCollided = false;
 //     });
 // }
+
+
+
+
+// More efficient enemySpawn() maybe
+// let swOffsetX;
+// let swOffsetY;
+// let consoleTopBottom;
+// let consoleLeftRight;
+
+// if(rndTopBottom == 0){
+//     swOffsetY = this.enemyInitBottomY;
+//     swOffsetX = this.enemyInitBottomX;
+//     consoleTopBottom = 'enemy spawned on bottom sidewalk, ';
+// } else if(rndTopBottom == 1) {
+//     swOffsetY = this.enemyInitTopY;
+//     swOffsetX = this.enemyInitTopX;
+//     consoleTopBottom = 'enemy spawned on top sidewalk, ';
+// }
+
+// if(rndLeftRight == 0) { 
+//     swOffsetX += 50;
+//     consoleTopBottom = 'left side';
+// } else if(rndLeftRight == 1) {
+//     swOffsetX += 283;
+//     consoleTopBottom = 'right side';
+// }
+
+// let newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
+// this.enemies.add(newEnemy);
+// newEnemy.play('enemyWalk');
+// console.log(consoleTopBottom + consoleLeftRight);
