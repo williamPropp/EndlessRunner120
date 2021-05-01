@@ -26,10 +26,10 @@ class Play extends Phaser.Scene {
         this.crosswalk.x -= 15;
         this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
-        for(let enemy of this.enemies.getChildren()) {
-            enemy.x -= 15;
-            enemy.x += 5.5;
-        }
+        // for(let enemy of this.enemies.getChildren()) {
+        //     enemy.x -= 15;
+        //     enemy.x += 5.5;
+        // }
         //console.log(this.crosswalk.y - this.player.y)
     }
 
@@ -43,6 +43,8 @@ class Play extends Phaser.Scene {
                 this.player.x += this.strafeDistance;
                 //console.log('you strafed right');
             }
+            this.movedLeft = false;
+            this.movedRight = false;
     }
 
 
@@ -52,6 +54,7 @@ class Play extends Phaser.Scene {
         } else if(fastOrRepeat == 'repeat') {
             console.log('you forgot how to walk, and you tripped');
         }
+
 
         this.player.angle = 90; //Make player 'trip'
         this.player.x += 180; //Correct x, y after rotation
@@ -93,13 +96,14 @@ class Play extends Phaser.Scene {
             swOffsetX += 50;
             consoleLeftRight = 'left side';
         } else if(rndLeftRight == 1) {
-            swOffsetX += 283;
+            swOffsetX += 280;
             consoleLeftRight = 'right side';
         }
 
         //Create new enemy, add them to the enemies group, and play walking animation
         let newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
         this.enemies.add(newEnemy);
+        this.enemyLayer.add(newEnemy);
         newEnemy.play('enemyWalk');
         console.log(consoleTopBottom + consoleLeftRight);
     }
@@ -170,7 +174,6 @@ class Play extends Phaser.Scene {
         this.strafeDistance = 8; //How far to strafe when player presses keyLEFT, or keyRIGHT
         this.moveDistance = 16; //How far to mave when player takes a step
         this.maxEnemies = 5;
-        this.numEnemies = 0; //Number of Enemies currently in the scene
         this.enemySpawnTime = 2000; //How many ms to spawn an enemy
         this.directionTimer = 1000; //How many ms to change enemy direction
 
@@ -197,6 +200,8 @@ class Play extends Phaser.Scene {
         this.justTripped = false;
         this.justCollided = false;
         this.spawnedEnemy = false;
+        this.onTopSW = false;
+        this.onBottomSW = true;
 
         //Create string arrays for speech bubbles
         // this.enemyInsults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
@@ -291,7 +296,21 @@ class Play extends Phaser.Scene {
             this.spawnEnemy();
             this.spawnedEnemy = false;
         });
-         
+        
+        //Create Layers
+        // this.playerLayer = this.add.layer(this, [this.player]);
+        // this.enemyLayer = this.add.layer(this, this.enemies.getChildren());
+
+        // this.playerLayer = new Layer(this, [this.player]);
+        // this.enemyLayer = new Layer(this, this.enemies.getChildren());
+
+        this.playerLayer = this.add.layer();
+        this.playerLayer.add([this.player]);
+        this.enemyLayer = this.add.layer();
+
+        // const enemyLayer = this.add.layer();
+        // enemyLayer.add(this.enemies.getChildren());
+
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -305,6 +324,7 @@ class Play extends Phaser.Scene {
         keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
 
         //Create overlap physics between player and enemies
@@ -317,7 +337,24 @@ class Play extends Phaser.Scene {
         //While gameOver = false
         if(!this.gameOver) {
 
-            this.numEnemies = this.enemies.getLength();
+            //Handle layers to make it seem 3D
+            if(this.onTopSW) {
+                if(this.player.x > game.config.width/2 - 30) {
+                    this.enemyLayer.setDepth(1);
+                    this.playerLayer.setDepth(2);
+                } else {
+                    this.enemyLayer.setDepth(2);
+                    this.playerLayer.setDepth(1);
+                }
+            } else if(this.onBottomSW) {
+                if(this.player.x > game.config.width/2) {
+                    this.enemyLayer.setDepth(1);
+                    this.playerLayer.setDepth(2);
+                } else {
+                    this.enemyLayer.setDepth(2);
+                    this.playerLayer.setDepth(1);
+                }
+            }
 
             //Update enemy group movement and spawn more enemies every x milliseconds, where x = this.enemySpawnTime
             for(let enemy of this.enemies.getChildren()) {
@@ -330,7 +367,7 @@ class Play extends Phaser.Scene {
                 }
 
                 //Only spawn an enemy if there are les enemies than the max
-                if(this.numEnemies < this.maxEnemies && !this.spawnedEnemy) {
+                if(this.enemies.getLength() < this.maxEnemies && !this.spawnedEnemy) {
                     this.spawnedEnemy = true;
                     this.time.delayedCall(this.enemySpawnTime, () => {
                         this.spawnEnemy();
@@ -418,6 +455,8 @@ class Play extends Phaser.Scene {
                     this.player.y -= 320;
                     this.swLeftBorder = 20;
                     this.swRightBorder = 75;
+                    this.onBottomSW = false;
+                    this.onTopSW = true;
             } 
             if (this.crosswalk.x + this.crosswalk.width/2 > this.player.x &&
                 this.crosswalk.x - this.crosswalk.width/2 < this.player.x &&
@@ -429,6 +468,8 @@ class Play extends Phaser.Scene {
                 this.player.y = this.playerInitY + 20
                 this.swLeftBorder = this.playerInitY - 30; //sidewalk borders
                 this.swRightBorder = this.playerInitY + 25;
+                this.onBottomSW = false;
+                this.onTopSW = true;
             }
        
             //reset crosswalk
@@ -471,6 +512,11 @@ class Play extends Phaser.Scene {
         if(Phaser.Input.Keyboard.JustDown(keyX)) {
             this.playerHealth++;
             //console.log('playerHealth = ' + this.playerHealth);
+        }
+
+        //Press ESC to return to Menu
+        if(Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.scene.start("menuScene");
         }
     }
 }

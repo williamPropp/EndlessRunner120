@@ -8,7 +8,7 @@ class Tutorial extends Phaser.Scene {
 
         let tutorialSmallConfig = { fontFamily: 'Helvetica', fontSize: '25px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' };
         this.add.text(5, 10, 'Press F to play', tutorialSmallConfig);
-        this.add.text(5, 45, 'Press R to Return to Menu', tutorialSmallConfig);
+        this.add.text(5, 45, 'Press ESC to Return to Menu', tutorialSmallConfig);
         let tutorialBigConfig = { fontFamily: 'Helvetica', fontSize: '32px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center' };
         this.add.text(game.config.width/2, game.config.height/4, 'Press A to step with you left foot', tutorialBigConfig).setOrigin(0.5,0);
         this.add.text(game.config.width/2, game.config.height/4 + 50, 'Press D to step with you right foot', tutorialBigConfig).setOrigin(0.5,0);
@@ -19,7 +19,7 @@ class Tutorial extends Phaser.Scene {
 
         //Define keys
         this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-        this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     update() {
@@ -29,7 +29,7 @@ class Tutorial extends Phaser.Scene {
         }
 
         //Return to Menu when R is pressed
-        if(this.keyR.isDown) {
+        if(this.keyESC.isDown) {
             this.scene.start("menuScene");
         }
 
