@@ -16,7 +16,7 @@ class Play extends Phaser.Scene {
         this.load.image('enemy', 'enemy.png');
         this.load.image('player', 'Player.png');
         this.load.image('cross', 'Crosswalk.png');
-        //this.load.spritesheet('playerLeftStep', 'assets/playerAtlas.png', {frameWidth: 55, frameHeight: 150, startFrame: 0, endFrame: 3});
+        this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
     }
 
     moveForward() {
@@ -219,6 +219,33 @@ class Play extends Phaser.Scene {
         //this.anims.create({ key: 'playerAtlas', frames: this.anims.generateFrameNumbers('playerAtlas', { start: 0, end: 0, first: 0}), frameRate: 15 });
         this.player = this.physics.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
 
+        //Create Player Animations
+        this.anims.create({
+            key: 'playerLeft',
+            frames: this.anims.generateFrameNames('steps', {
+                start: 1,
+                end: 3,
+                zeroPad: 1,
+                prefix: 'Player_Left0',
+                suffix: '.png'
+            }),
+            frameRate: 8,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'playerRight',
+            frames: this.anims.generateFrameNames('steps', {
+                start: 1,
+                end: 3,
+                zeroPad: 1,
+                prefix: 'Player_Right0',
+                suffix: '.png'
+            }),
+            frameRate: 8,
+            repeat: 0
+        });
+
         //Create enemy group
         this.enemies = this.physics.add.group({
             classType: Phaser.GameObjects.Sprite,
@@ -289,6 +316,7 @@ class Play extends Phaser.Scene {
                 //Left step check
                 if(!this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA)) {
                     this.lastLeftStep = this.frameCounter;
+                    this.player.play('playerLeft');
                     this.moveForward();
                     this.movedLeft = true;
                     this.movedRight = false;
@@ -303,6 +331,7 @@ class Play extends Phaser.Scene {
                 //Right step check
                 if(!this.movedRight && Phaser.Input.Keyboard.JustDown(keyD)) {
                     this.lastRightStep = this.frameCounter;
+                    this.player.play('playerRight');
                     this.moveForward();
                     this.movedRight = true;
                     this.movedLeft = false;
