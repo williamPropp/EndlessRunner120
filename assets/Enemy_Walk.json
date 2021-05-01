@@ -1,0 +1,92 @@
+{"frames": [
+
+{
+	"filename": "Enemy_Walk001.png",
+	"frame": {"x":0,"y":0,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk002.png",
+	"frame": {"x":0,"y":148,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk003.png",
+	"frame": {"x":0,"y":296,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk004.png",
+	"frame": {"x":0,"y":444,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk005.png",
+	"frame": {"x":0,"y":592,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk006.png",
+	"frame": {"x":0,"y":740,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk007.png",
+	"frame": {"x":0,"y":888,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk008.png",
+	"frame": {"x":0,"y":1036,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk009.png",
+	"frame": {"x":0,"y":1184,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk010.png",
+	"frame": {"x":0,"y":1332,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Enemy_Walk.png",
+	"format": "RGBA8888",
+	"size": {"w":55,"h":1480},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:f9cacf345ee74e8c690522d83f131f08:3282c797e9b8a75a2f93a996ffcc2fae:a8690ebab91a2b83c1bd3bb68bab63a5$"
+}
+}

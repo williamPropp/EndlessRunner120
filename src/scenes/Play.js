@@ -18,6 +18,7 @@ class Play extends Phaser.Scene {
         this.load.image('cross', 'Crosswalk.png');
         //this.load.image('speechBubble', 'Speech_Bubble.png');
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
+        this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
     }
 
     moveForward() {
@@ -77,12 +78,14 @@ class Play extends Phaser.Scene {
                 //let swOffsetX = Math.floor(Math.random() * 283);
                 let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
                 this.enemies.add(newEnemyBottom);
+                newEnemyBottom.play('enemyWalk');
                 console.log('enemy spawned on bottom sidewalk, left side');
             } else if(rndLeftRight == 1) {
                 let swOffsetX = 283;
                 //let swOffsetX = Math.floor(Math.random() * 283);
                 let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
                 this.enemies.add(newEnemyBottom);
+                newEnemyBottom.play('enemyWalk');
                 console.log('enemy spawned on bottom sidewalk, right side');
             }
             //console.log('enemy spawned on right sidewalk');
@@ -92,12 +95,14 @@ class Play extends Phaser.Scene {
                 // let swOffsetX = Math.floor(Math.random() * 284);
                 let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
                 this.enemies.add(newEnemyTop);
+                newEnemyTop.play('enemyWalk');
                 console.log('enemy spawned on top sidewalk, left side');
             } else if(rndLeftRight == 1) {
                 let swOffsetX = 284;
                 // let swOffsetX = Math.floor(Math.random() * 284);
                 let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
                 this.enemies.add(newEnemyTop);
+                newEnemyTop.play('enemyWalk');
                 console.log('enemy spawned on top sidewalk, right side');
             }
             //console.log('enemy spawned on left sidewalk');
@@ -231,7 +236,7 @@ class Play extends Phaser.Scene {
         //this.anims.create({ key: 'playerAtlas', frames: this.anims.generateFrameNumbers('playerAtlas', { start: 0, end: 0, first: 0}), frameRate: 15 });
         this.player = this.physics.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
 
-        //Create Player Animations
+        //Create Animations
         this.anims.create({
             key: 'playerLeft',
             frames: this.anims.generateFrameNames('steps', {
@@ -256,6 +261,19 @@ class Play extends Phaser.Scene {
             }),
             frameRate: 8,
             repeat: 0
+        });
+
+        this.anims.create({
+            key: 'enemyWalk',
+            frames: this.anims.generateFrameNames('enemy_walk', {
+                start: 1,
+                end: 10,
+                zeroPad: 2,
+                prefix: 'Enemy_Walk0',
+                suffix: '.png'
+            }),
+            frameRate: 8,
+            repeat: -1
         });
 
         //Create enemy group
