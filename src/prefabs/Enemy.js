@@ -1,6 +1,6 @@
 class Enemy extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame) {
-        super(scene, x, y, texture, frame);
+    constructor(scene, x, y, texture, frame/*, speechBubble*/) {
+        super(scene, x, y, texture, frame/*, speechBubble*/);
 
         //Add object to existing scene
         scene.add.existing(this);
@@ -9,17 +9,19 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.mvmtX = 15 / 5;
         this.mvmtY = 5.5 / 5;
 
-        this.insultTextConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' };
-        this.enemyInsult = scene.add.text(this.x-120, this.y-80, this.genInsult(), this.insultTextConfig);
+        // scene.load.image('speechBubble', '../../assets/Speech_Bubble.png');
+        // this.speechBubble = scene.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble').setOrigin(0,0);
+        // this.speechBubble = speechBubble;
+        this.insultTextConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' };
+        this.enemyInsult = scene.add.text(this.x, this.y-20, this.genInsult(), this.insultTextConfig).setOrigin(0.5,0);
         this.enemyInsult.alpha = 0;
-
-        this.insultDisplayed = false;
+       // this.speechBubble.alpha = 0;
     }
 
-    preload() {
-        this.load.path = './assets/';
-        this.load.image('speechBubble', 'speechBubble.png')
-    }
+    // preload() {
+    //     this.load.path = './assets/';
+    //     this.load.image('speechBubble', 'Speech_Bubble.png')
+    // }
 
     genInsult() {
         let insults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!', '???']; //feel free to add more phrases
@@ -28,13 +30,13 @@ class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     displayInsult() {
-        this.speechBubble = this.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble');
-        this.enemyInsult.alpha = 1;
-        this.insultDisplayed = true;
-        this.time.delayedCall(2000, () => {
-            this.speechBubble.destroy();
-            this.enemyInsult.destroy();
-        });
+        // this.speechBubble.alpha = 1;
+        this.enemyInsult.alpha = 1;    
+    }
+
+    destroyInsult() {
+        // this.speechBubble.destroy();
+        this.enemyInsult.destroy();
     }
 
     update() {
@@ -42,14 +44,13 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.x -= this.mvmtX;
         this.y += this.mvmtY;
 
+        //Move Speech Bubble
+        // this.speechBubble.x -= this.mvmtX;
+        // this.speechBubble.y += this.mvmtY;
+
         //Move Insult text
         this.enemyInsult.x -= this.mvmtX;
         this.enemyInsult.y += this.mvmtY;
-
-        if(this.insultDisplayed) {
-            this.speechBubble.x -= this.mvmtX;
-            this.speechBubble.y += this.mvmtY;
-        }
 
     }
 }

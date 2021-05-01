@@ -16,6 +16,7 @@ class Play extends Phaser.Scene {
         this.load.image('enemy', 'enemy.png');
         this.load.image('player', 'Player.png');
         this.load.image('cross', 'Crosswalk.png');
+        //this.load.image('speechBubble', 'Speech_Bubble.png');
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
     }
 
@@ -68,17 +69,19 @@ class Play extends Phaser.Scene {
         //50-50 chance whether the enemy is on the left or right side of the sidewalk
         let rndLeftRight = Math.floor(Math.random() * 2);
 
+        //let bubble = this.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble')
+
         if(rndTopBottom == 0){
             if(rndLeftRight == 0) { 
                 let swOffsetX = 40;
                 //let swOffsetX = Math.floor(Math.random() * 283);
-                let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy').setOrigin(0,0);
+                let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
                 this.enemies.add(newEnemyBottom);
                 console.log('enemy spawned on bottom sidewalk, left side');
             } else if(rndLeftRight == 1) {
                 let swOffsetX = 283;
                 //let swOffsetX = Math.floor(Math.random() * 283);
-                let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy').setOrigin(0,0);
+                let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
                 this.enemies.add(newEnemyBottom);
                 console.log('enemy spawned on bottom sidewalk, right side');
             }
@@ -87,13 +90,13 @@ class Play extends Phaser.Scene {
             if(rndLeftRight == 0) {
                 let swOffsetX = 40;
                 // let swOffsetX = Math.floor(Math.random() * 284);
-                let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy').setOrigin(0,0);
+                let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
                 this.enemies.add(newEnemyTop);
                 console.log('enemy spawned on top sidewalk, left side');
             } else if(rndLeftRight == 1) {
                 let swOffsetX = 284;
                 // let swOffsetX = Math.floor(Math.random() * 284);
-                let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy').setOrigin(0,0);
+                let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy'/*, 0, bubble*/).setOrigin(0,0);
                 this.enemies.add(newEnemyTop);
                 console.log('enemy spawned on top sidewalk, right side');
             }
@@ -108,8 +111,11 @@ class Play extends Phaser.Scene {
             this.time.delayedCall(1500, () => {
                 if(!this.gameOver) {
                     this.justCollided = false;
+                    enemy.destroyInsult();
                 }
-                let sorry = this.add.text(this.playerInitX, this.playerInitY, this.sorryText, { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' })
+
+                this.sorryText = this.sorryArray[Math.floor(Math.random()*this.sorryArray.length)];
+                let sorry = this.add.text(this.playerInitX, this.playerInitY-20, this.sorryText, { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' }).setOrigin(0.5,0);
                 this.time.delayedCall(1500, () => {
                     sorry.destroy();
                 });
@@ -195,7 +201,7 @@ class Play extends Phaser.Scene {
         //Create string arrays for speech bubbles
         // this.enemyInsults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
         this.sorryArray = ['SORRY', 'omg I\'m so sorry', 'sorry', 'oops! sorry', 'oh no! sorry', 'I\'m stupid', 'oh god why me', 'please no']; //feel free to add more phrases
-        this.sorryText = this.sorryArray[Math.floor(Math.random()*sorryArray.length)];
+        this.sorryText = this.sorryArray[Math.floor(Math.random()*this.sorryArray.length)];
         //this.doIKnowThatGuy = ['Wait, oh no, do I know him from somewhere?', 'shoot, is that Jerry??']; //This is for super enemy if we add them
 
         //Create Speech text config
