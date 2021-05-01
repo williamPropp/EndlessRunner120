@@ -62,23 +62,45 @@ class Play extends Phaser.Scene {
         //Randomize enemySpawnTime
         this.enemySpawnTime = 2000 + Math.floor(Math.random() * 2000);
 
-        //50-50 chance of enemy spawning on right or left sidewalk
-        let rnd = Math.floor(Math.random() * 2);
-        if(rnd == 0){
-            console.log('enemy spawned on right sidewalk');
-            let rndX = Math.floor(Math.random() * 283);
-            let newEnemyRight = new Enemy(this, this.enemyInitBottomX + rndX, this.enemyInitBottomY, 'enemy').setOrigin(0,0);
-            //this.physics.add.overlap(this.player, newEnemyRight, this.enemyCollide(newEnemyRight), null, this);
+        //50-50 chance of enemy spawning on top or bottom sidewalk
+        let rndTopBottom = Math.floor(Math.random() * 2);
 
-            this.enemies.add(newEnemyRight);
-        } else if(rnd == 1){
-            console.log('enemy spawned on left sidewalk');
-            let rndX = Math.floor(Math.random() * 284);
-            let newEnemyLeft = new Enemy(this, this.enemyInitTopX + rndX, this.enemyInitTopY , 'enemy').setOrigin(0,0);
-          //  this.physics.add.overlap(this.player, newEnemyLeft, this.enemyCollide(newEnemyLeft), null, this);
-            this.enemies.add(newEnemyLeft);
+        //50-50 chance whether the enemy is on the left or right side of the sidewalk
+        let rndLeftRight = Math.floor(Math.random() * 2);
+
+        if(rndTopBottom == 0){
+            if(rndLeftRight == 0) { 
+                let swOffsetX = 40;
+                //let swOffsetX = Math.floor(Math.random() * 283);
+                let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy').setOrigin(0,0);
+                this.enemies.add(newEnemyBottom);
+                console.log('enemy spawned on bottom sidewalk, left side');
+            } else if(rndLeftRight == 1) {
+                let swOffsetX = 283;
+                //let swOffsetX = Math.floor(Math.random() * 283);
+                let newEnemyBottom = new Enemy(this, this.enemyInitBottomX + swOffsetX, this.enemyInitBottomY, 'enemy').setOrigin(0,0);
+                this.enemies.add(newEnemyBottom);
+                console.log('enemy spawned on bottom sidewalk, right side');
+            }
+            //console.log('enemy spawned on right sidewalk');
+        } else if(rndTopBottom == 1){
+            if(rndLeftRight == 0) {
+                let swOffsetX = 40;
+                // let swOffsetX = Math.floor(Math.random() * 284);
+                let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy').setOrigin(0,0);
+                this.enemies.add(newEnemyTop);
+                console.log('enemy spawned on top sidewalk, left side');
+            } else if(rndLeftRight == 1) {
+                let swOffsetX = 284;
+                // let swOffsetX = Math.floor(Math.random() * 284);
+                let newEnemyTop = new Enemy(this, this.enemyInitTopX + swOffsetX, this.enemyInitTopY, 'enemy').setOrigin(0,0);
+                this.enemies.add(newEnemyTop);
+                console.log('enemy spawned on top sidewalk, right side');
+            }
+            //console.log('enemy spawned on left sidewalk');
         }
     }
+
     enemyCollide() {  
         if(!this.justCollided){
             this.takeDmg(1);
@@ -118,10 +140,6 @@ class Play extends Phaser.Scene {
         }
     }
 
-    writeEnemySpeech(enemy) {
-        //make enemy speech bubble with text happen when collisions occur
-    }
-
     doGameOver() {
         this.gameOver = true;
         this.add.text(game.config.width / 3, game.config.height / 2, 'GAMEOVER', { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
@@ -143,6 +161,7 @@ class Play extends Phaser.Scene {
         this.maxEnemies = 5;
         this.numEnemies = 0; //Number of Enemies currently in the scene
         this.enemySpawnTime = 2000; //How many ms to spawn an enemy
+        this.directionTimer = 1000; //How many ms to change enemy direction
 
         //Initialize location variables
         this.playerInitX = game.config.width / 2; //Initial Player x, y
@@ -169,10 +188,12 @@ class Play extends Phaser.Scene {
         this.spawnedEnemy = false;
 
         //Create string arrays for speech bubbles
-        this.enemyInsults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
-        this.selfDeprecatingText = ['I\'m stupid', 'oh god why me', 'please no', ''];
-        this.sorryText = ['SORRY', 'omg I\'m so sorry', 'sorry', 'oops! sorry', 'oh no! sorry'];
-        this.doIKnowThatGuy = ['Wait, oh no, do I know him from somewhere?', 'shoot, is that Jerry??'];
+        // this.enemyInsults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
+        this.sorryText = ['SORRY', 'omg I\'m so sorry', 'sorry', 'oops! sorry', 'oh no! sorry', 'I\'m stupid', 'oh god why me', 'please no']; //feel free to add more phrases
+        //this.doIKnowThatGuy = ['Wait, oh no, do I know him from somewhere?', 'shoot, is that Jerry??']; //This is for super enemy if we add them
+
+        //Create Speech text config
+        this.speechTextConfig = { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' }
 
         //Add background
         this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
