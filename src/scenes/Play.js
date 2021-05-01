@@ -101,13 +101,18 @@ class Play extends Phaser.Scene {
         }
     }
 
-    enemyCollide() {  
+    enemyCollide(player, enemy) {  
         if(!this.justCollided){
             this.takeDmg(1);
-            this.time.delayedCall(1000, () => {
+            enemy.displayInsult();
+            this.time.delayedCall(1500, () => {
                 if(!this.gameOver) {
                     this.justCollided = false;
                 }
+                let sorry = this.add.text(this.playerInitX, this.playerInitY, this.sorryText, { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' })
+                this.time.delayedCall(1500, () => {
+                    sorry.destroy();
+                });
             });
         } 
         this.justCollided = true;
@@ -189,7 +194,8 @@ class Play extends Phaser.Scene {
 
         //Create string arrays for speech bubbles
         // this.enemyInsults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
-        this.sorryText = ['SORRY', 'omg I\'m so sorry', 'sorry', 'oops! sorry', 'oh no! sorry', 'I\'m stupid', 'oh god why me', 'please no']; //feel free to add more phrases
+        this.sorryArray = ['SORRY', 'omg I\'m so sorry', 'sorry', 'oops! sorry', 'oh no! sorry', 'I\'m stupid', 'oh god why me', 'please no']; //feel free to add more phrases
+        this.sorryText = this.sorryArray[Math.floor(Math.random()*sorryArray.length)];
         //this.doIKnowThatGuy = ['Wait, oh no, do I know him from somewhere?', 'shoot, is that Jerry??']; //This is for super enemy if we add them
 
         //Create Speech text config

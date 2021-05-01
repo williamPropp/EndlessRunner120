@@ -9,6 +9,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.mvmtX = 15 / 5;
         this.mvmtY = 5.5 / 5;
 
+        this.insultTextConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' };
         this.enemyInsult = scene.add.text(this.x-120, this.y-80, this.genInsult(), this.insultTextConfig);
         this.enemyInsult.alpha = 0;
 
@@ -21,18 +22,18 @@ class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     genInsult() {
-        let insults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
-        let rndInsult = Math.floor(Math.random()*insults.length);
+        let insults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!', '???']; //feel free to add more phrases
+        let rndInsult = insults[Math.floor(Math.random()*insults.length)];
         return rndInsult;
     }
 
     displayInsult() {
-        this.speechBubble = this.add.sprite(/*sizeX, sizeY, */this.x-120, this.y-80, 'speechBubble');
+        this.speechBubble = this.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble');
         this.enemyInsult.alpha = 1;
         this.insultDisplayed = true;
         this.time.delayedCall(2000, () => {
-            this.speechBubble.alpha = 0;
-            this.enemyInsult.alpha = 0;
+            this.speechBubble.destroy();
+            this.enemyInsult.destroy();
         });
     }
 
