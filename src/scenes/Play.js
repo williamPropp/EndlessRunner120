@@ -16,7 +16,7 @@ class Play extends Phaser.Scene {
         this.load.image('enemy', 'enemy.png');
         this.load.image('player', 'Player.png');
         this.load.image('cross', 'Crosswalk.png');
-        //this.load.image('speechBubble', 'Speech_Bubble.png');
+        this.load.image('super_enemy', 'Super_Enemy.png');
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
         this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
         this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
@@ -113,10 +113,10 @@ class Play extends Phaser.Scene {
             console.log(consoleTopBottom + consoleLeftRight);
         }
         else{
-            let newEnemy = new SuperEnemy(this,swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
+            let newEnemy = new SuperEnemy(this,swOffsetX, swOffsetY, 'Super_Enemy').setOrigin(0,0);
             this.superEnemies.add(newEnemy);
             this.enemyLayer.add(newEnemy);
-            newEnemy.play('enemyWalk');
+            newEnemy.play('super_walk');
             console.log(consoleTopBottom + consoleLeftRight);
             console.log("SuperEnemy spawned")
         }
@@ -294,6 +294,19 @@ class Play extends Phaser.Scene {
                 end: 10,
                 zeroPad: 2,
                 prefix: 'Enemy_Walk',
+                suffix: '.png'
+            }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'super_walk',
+            frames: this.anims.generateFrameNames('enemy_walk', {
+                start: 1,
+                end: 10,
+                zeroPad: 2,
+                prefix: 'super_',
                 suffix: '.png'
             }),
             frameRate: 8,
