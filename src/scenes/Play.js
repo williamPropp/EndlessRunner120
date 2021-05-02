@@ -81,6 +81,7 @@ class Play extends Phaser.Scene {
         let consoleTopBottom;
         let consoleLeftRight;
 
+
         //Set x and y for either top or bottom spawn
         if(rndTopBottom == 0){
             swOffsetY = this.enemyInitBottomY;
@@ -101,17 +102,38 @@ class Play extends Phaser.Scene {
             consoleLeftRight = 'right side';
         }
 
-        //Create new enemy, add them to the enemies group, and play walking animation
-        let newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
-        this.enemies.add(newEnemy);
-        this.enemyLayer.add(newEnemy);
-        newEnemy.play('enemyWalk');
-        console.log(consoleTopBottom + consoleLeftRight);
+        //Randomizes whether enemy is a SuperEnemy or not
+        let rand = Math.random();
+        console.log("rand is" + rand);
+        if (rand < .75){
+            //Create new enemy, add them to the enemies group, and play walking animation
+            let newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
+            this.enemies.add(newEnemy);
+            this.enemyLayer.add(newEnemy);
+            newEnemy.play('enemyWalk');
+            console.log(consoleTopBottom + consoleLeftRight);
+        }
+        else{
+            let newEnemy = new SuperEnemy(this,swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
+            this.superEnemies.add(newEnemy);
+            this.enemyLayer.add(newEnemy);
+            newEnemy.play('enemyWalk');
+            console.log(consoleTopBottom + consoleLeftRight);
+            console.log("SuperEnemy spawned")
+        }
+
+
     }
 
     enemyCollide(player, enemy) {  
         if(!this.justCollided){
-            this.takeDmg(1);
+            if(this.enemies.contains(enemy)) {
+                this.takeDmg(1);
+            }
+            else{
+                this.takeDmg(2);
+            }
+            
             enemy.displayInsult();
             this.time.delayedCall(1500, () => {
                 if(!this.gameOver) {
@@ -305,6 +327,19 @@ class Play extends Phaser.Scene {
             createMultipleCallback: null
         });
 
+        //Create super enemy group
+        this.superEnemies = this.physics.add.group({
+            classType: Phaser.GameObjects.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: this.maxEnemies,
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null
+        });
+
         //Spawn first enemy
         this.time.delayedCall(this.enemySpawnTime, () => {
             this.spawnEnemy();
@@ -382,6 +417,27 @@ class Play extends Phaser.Scene {
 
                 //Only spawn an enemy if there are les enemies than the max
                 if(this.enemies.getLength() < this.maxEnemies && !this.spawnedEnemy) {
+                    this.spawnedEnemy = true;
+                    this.time.delayedCall(this.enemySpawnTime, () => {
+                        this.spawnEnemy();
+                        this.spawnedEnemy = false;
+                    });
+                }
+                
+            }
+
+            //Update super enemy group movement and spawn more enemies every x milliseconds, where x = this.enemySpawnTime
+            for(let enemy of this.superEnemies.getChildren()) {
+                enemy.update();
+
+                //If enemies leave screen, they are destroyed
+                if(enemy.x < -1 * (enemy.width)) {
+                    this.superEnemies.remove(enemy); //Remove them from the group
+                    enemy.destroy(); //Then destroy them
+                }
+
+                //Only spawn an enemy if there are les enemies than the max
+                if(this.superEnemies.getLength() < this.maxEnemies && !this.spawnedEnemy) {
                     this.spawnedEnemy = true;
                     this.time.delayedCall(this.enemySpawnTime, () => {
                         this.spawnEnemy();
