@@ -294,7 +294,7 @@ class Play extends Phaser.Scene {
                 start: 1,
                 end: 10,
                 zeroPad: 2,
-                prefix: 'Enemy_Walk0',
+                prefix: 'Enemy_Walk',
                 suffix: '.png'
             }),
             frameRate: 8,
