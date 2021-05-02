@@ -6,8 +6,8 @@ class SuperEnemy extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
 
         //Enemy Speed (divided by 5 to slow them down a bit)
-        this.mvmtX = 15 / 3;
-        this.mvmtY = 5.5 / 3;
+        this.mvmtX = 15 / 3.25;
+        this.mvmtY = 5.5 / 3.25;
 
         // scene.load.image('speechBubble', '../../assets/Speech_Bubble.png');
         // this.speechBubble = scene.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble').setOrigin(0,0);

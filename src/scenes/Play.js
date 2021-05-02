@@ -103,9 +103,8 @@ class Play extends Phaser.Scene {
         }
 
         //Randomizes whether enemy is a SuperEnemy or not
-        let rand = Math.random();
-        console.log("rand is" + rand);
-        if (rand < .75){
+
+        if (Math.random() < .75){
             //Create new enemy, add them to the enemies group, and play walking animation
             let newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
             this.enemies.add(newEnemy);
@@ -378,6 +377,7 @@ class Play extends Phaser.Scene {
 
         //Create overlap physics between player and enemies
         this.physics.add.overlap(this.player, this.enemies, this.enemyCollide, null, this);
+        this.physics.add.overlap(this.player, this.superEnemies, this.enemyCollide, null, this);
     }
 
     update() {
