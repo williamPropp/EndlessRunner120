@@ -19,6 +19,7 @@ class Play extends Phaser.Scene {
         //this.load.image('speechBubble', 'Speech_Bubble.png');
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
         this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
+        this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
     }
 
     moveForward() {
@@ -278,6 +279,19 @@ class Play extends Phaser.Scene {
             repeat: -1
         });
 
+        this.anims.create({
+            key: 'crossUp',
+            frames: this.anims.generateFrameNames('player_up', {
+                start: 1,
+                end: 12,
+                zeroPad: 2,
+                prefix: 'Player_Cross_',
+                suffix: '.png'
+            }),
+            frameRate: 8,
+            repeat: 0
+        });
+
         //Create enemy group
         this.enemies = this.physics.add.group({
             classType: Phaser.GameObjects.Sprite,
@@ -452,6 +466,7 @@ class Play extends Phaser.Scene {
                     // this.swRightBorder = this.playerInitY + 20;
                     // this.swRightBorder = 155;
                 //^walk across (still buggy) or v teleport
+                    this.player.play('crossUp');
                     this.player.y -= 320;
                     this.swLeftBorder = 20;
                     this.swRightBorder = 75;
