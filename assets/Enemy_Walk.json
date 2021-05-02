@@ -1,7 +1,7 @@
 {"frames": [
 
 {
-	"filename": "Enemy_Walk001.png",
+	"filename": "Enemy_Walk01.png",
 	"frame": {"x":0,"y":0,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -9,7 +9,15 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk002.png",
+	"filename": "Enemy_Walk02.png",
+	"frame": {"x":55,"y":0,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk03.png",
 	"frame": {"x":0,"y":148,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -17,7 +25,15 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk003.png",
+	"filename": "Enemy_Walk04.png",
+	"frame": {"x":55,"y":148,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk05.png",
 	"frame": {"x":0,"y":296,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -25,7 +41,15 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk004.png",
+	"filename": "Enemy_Walk06.png",
+	"frame": {"x":55,"y":296,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk07.png",
 	"frame": {"x":0,"y":444,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -33,7 +57,15 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk005.png",
+	"filename": "Enemy_Walk08.png",
+	"frame": {"x":55,"y":444,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "Enemy_Walk09.png",
 	"frame": {"x":0,"y":592,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -41,7 +73,15 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk006.png",
+	"filename": "Enemy_Walk010.png",
+	"frame": {"x":55,"y":592,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "super_01.png",
 	"frame": {"x":0,"y":740,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -49,7 +89,15 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk007.png",
+	"filename": "super_02.png",
+	"frame": {"x":55,"y":740,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "super_03.png",
 	"frame": {"x":0,"y":888,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -57,7 +105,15 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk008.png",
+	"filename": "super_04.png",
+	"frame": {"x":55,"y":888,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "super_05.png",
 	"frame": {"x":0,"y":1036,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -65,7 +121,15 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk009.png",
+	"filename": "super_06.png",
+	"frame": {"x":55,"y":1036,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "super_07.png",
 	"frame": {"x":0,"y":1184,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
@@ -73,8 +137,24 @@
 	"sourceSize": {"w":55,"h":148}
 },
 {
-	"filename": "Enemy_Walk010.png",
+	"filename": "super_08.png",
+	"frame": {"x":55,"y":1184,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "super_09.png",
 	"frame": {"x":0,"y":1332,"w":55,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
+	"sourceSize": {"w":55,"h":148}
+},
+{
+	"filename": "super_10.png",
+	"frame": {"x":55,"y":1332,"w":55,"h":148},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":148},
@@ -85,8 +165,8 @@
 	"version": "1.0",
 	"image": "Enemy_Walk.png",
 	"format": "RGBA8888",
-	"size": {"w":55,"h":1480},
+	"size": {"w":110,"h":1480},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:f9cacf345ee74e8c690522d83f131f08:3282c797e9b8a75a2f93a996ffcc2fae:a8690ebab91a2b83c1bd3bb68bab63a5$"
+	"smartupdate": "$TexturePacker:SmartUpdate:34579a12ca7a45a99806b748a1b937d6:afaba092260d904756986be0e85d96df:a8690ebab91a2b83c1bd3bb68bab63a5$"
 }
 }
