@@ -8,6 +8,8 @@ class Play extends Phaser.Scene {
         //Load all assets
         this.load.path = './assets/';
         this.load.image('background', 'Background.png');
+        this.load.image('sea', 'EW_Sea.png');
+        this.load.image('city', 'EW_City.png');
         this.load.image('HBoverlay', 'HBoverlay.png');
         this.load.image('HB1', 'HB1.png');
         this.load.image('HB2', 'HB2.png');
@@ -260,7 +262,7 @@ class Play extends Phaser.Scene {
         //this.doIKnowThatGuy = ['Wait, oh no, do I know him from somewhere?', 'shoot, is that Jerry??']; //This is for super enemy if we add them
 
         //Add background
-        this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
+        this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0); //replace
         this.bg.angle = -20;
 
         //Create crosswalk
@@ -423,6 +425,16 @@ class Play extends Phaser.Scene {
 
         //While gameOver = false
         if(!this.gameOver) {
+
+            //change backgrounds
+            if(this.stepsTraveled > 20) {
+                this.bg.destroy;
+                this.bg.setTexture('city');
+            }
+            if(this.stepsTraveled > 40) {
+                this.bg.destroy;
+                this.bg.setTexture('sea');
+            }
 
             //change soundtrack speed based on step speed
             // let stepSpeed = Math.abs(this.lastRightStep - this.lastLeftStep);
