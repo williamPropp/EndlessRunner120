@@ -400,9 +400,9 @@ class Play extends Phaser.Scene {
         this.playerLayer = this.add.layer();
         this.playerLayer.add([this.player]);
         this.enemyLayer = this.add.layer();
-        this.gameOverLayer = this.add.layer();
-        this.gameOverLayer.add([this.gameOverText, this.rToRestartText]);
-        this.gameOverLayer.setDepth(4);
+        this.UILayer = this.add.layer();
+        this.UILayer.add([this.gameOverText, this.rToRestartText, this.distanceTravelledText, this.distanceSteps, this.hb1, this.hb2, this.hb3, this.hb4, this.hbOverlay]);
+        this.UILayer.setDepth(4);
 
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
