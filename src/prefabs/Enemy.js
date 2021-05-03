@@ -39,7 +39,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     update() {
         //Change hitbox
         if(this.onCreate) {
-            this.setSize(this.width, this.height/4, true);
+            this.setSize(this.width, this.height/6, true);
             this.setOffset(0, 110);
             this.onCreate = false
         }
