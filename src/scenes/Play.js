@@ -180,8 +180,22 @@ class Play extends Phaser.Scene {
 
     doGameOver() {
         this.gameOver = true;
-        this.add.text(game.config.width / 3, game.config.height / 2, 'GAMEOVER', { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
-        this.add.text((game.config.width / 5) * 2, (game.config.height / 7) * 4, 'press R to restart', { fontFamily: 'Helvetica', fontSize: '30px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
+        for(let enemy of this.enemies.getChildren()) {
+            enemy.stop();
+        }
+        for(let superEnemy of this.superEnemies.getChildren()) {
+            superEnemy.stop();
+        }
+        // this.add.text(game.config.width / 3, game.config.height / 2, 'GAMEOVER', { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
+        // this.add.text((game.config.width / 5) * 2, (game.config.height / 7) * 4, 'press R to restart', { fontFamily: 'Helvetica', fontSize: '30px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
+        
+        //Make gameOverText visible
+        this.gameOverText.alpha = 1;
+        this.rToRestartText.alpha = 1;
+
+        //Stop soundtrack from playing
+        this.soundtrack.stop();
+
     }
 
     create() {
@@ -199,6 +213,7 @@ class Play extends Phaser.Scene {
         this.maxEnemies = 5;
         this.enemySpawnTime = 2000; //How many ms to spawn an enemy
         this.directionTimer = 1000; //How many ms to change enemy direction
+        //this.soundConst = 20;
 
         //Initialize location variables
         this.playerInitX = game.config.width / 2; //Initial Player x, y
@@ -226,14 +241,23 @@ class Play extends Phaser.Scene {
         this.onTopSW = false;
         this.onBottomSW = true;
 
+        //Add music to the scene
+        this.soundtrack = this.sound.add('soundtrack', {
+            volume: 0.3,
+            rate: 0.9,
+            loop: true,
+        });
+        this.soundtrack.play();
+        
+
+        //Reset rate when scene resets
+        this.soundtrack.setRate(0.9);
+
         //Create string arrays for speech bubbles
         // this.enemyInsults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
         this.sorryArray = ['SORRY', 'omg I\'m so sorry', 'sorry', 'oops! sorry', 'oh no! sorry', 'I\'m stupid', 'oh god why me', 'please no']; //feel free to add more phrases
         this.sorryText = this.sorryArray[Math.floor(Math.random()*this.sorryArray.length)];
         //this.doIKnowThatGuy = ['Wait, oh no, do I know him from somewhere?', 'shoot, is that Jerry??']; //This is for super enemy if we add them
-
-        //Create Speech text config
-        this.speechTextConfig = { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' }
 
         //Add background
         this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0);
@@ -249,6 +273,12 @@ class Play extends Phaser.Scene {
         this.hb3 = this.add.tileSprite(20, 20, 240, 51, 'HB3').setOrigin(0,0);
         this.hb4 = this.add.tileSprite(20, 20, 240, 51, 'HB4').setOrigin(0,0);
         this.hbOverlay = this.add.tileSprite(20, 20, 240, 51, 'HBoverlay').setOrigin(0,0);
+
+        //Add gameOverText
+        this.gameOverText = this.add.text(game.config.width / 3, game.config.height / 2, 'GAMEOVER', { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', stroke: '#FFFFFF', strokeThickness: 3, align: 'right' });
+        this.rToRestartText = this.add.text((game.config.width / 5) * 2, (game.config.height / 7) * 4, 'press R to restart', { fontFamily: 'Helvetica', fontSize: '30px', backgroundColor: '#FFFFFF00', color: '#000000', stroke: '#FFFFFF', strokeThickness: 3, align: 'right' });
+        this.gameOverText.alpha = 0;
+        this.rToRestartText.alpha = 0;
 
         //Add distance travelled
         let distanceTextConfig = { fontFamily: 'Helvetica', fontSize: '28px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center' };
@@ -358,21 +388,14 @@ class Play extends Phaser.Scene {
             this.spawnEnemy();
             this.spawnedEnemy = false;
         });
-        
+
         //Create Layers
-        // this.playerLayer = this.add.layer(this, [this.player]);
-        // this.enemyLayer = this.add.layer(this, this.enemies.getChildren());
-
-        // this.playerLayer = new Layer(this, [this.player]);
-        // this.enemyLayer = new Layer(this, this.enemies.getChildren());
-
         this.playerLayer = this.add.layer();
         this.playerLayer.add([this.player]);
         this.enemyLayer = this.add.layer();
-        //this.superEnemyLayer = this.add.layer();
-
-        // const enemyLayer = this.add.layer();
-        // enemyLayer.add(this.enemies.getChildren());
+        this.gameOverLayer = this.add.layer();
+        this.gameOverLayer.add([this.gameOverText, this.rToRestartText]);
+        this.gameOverLayer.setDepth(4);
 
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -400,6 +423,20 @@ class Play extends Phaser.Scene {
 
         //While gameOver = false
         if(!this.gameOver) {
+
+            //change soundtrack speed based on step speed
+            // let stepSpeed = Math.abs(this.lastRightStep - this.lastLeftStep);
+            // let soundtrackSpeed = this.soundConst / stepSpeed;
+            // soundtrackSpeed /= 3;
+            // soundtrackSpeed.toFixed(1);
+            // soundtrackSpeed *= 3;
+            // soundtrackSpeed = Phaser.Math.Clamp(soundtrackSpeed, 0.1, 2);
+            // if(soundtrackSpeed > 2) {
+            //     soundtrackSpeed = 2;
+            // } else if(soundtrackSpeed < 0.1) {
+            //     soundtrackSpeed = 0.1;
+            // }
+            // this.soundtrack.setRate(soundtrackSpeed);
 
             //Handle layers to make it seem 3D
             if(this.onTopSW) {
@@ -476,8 +513,7 @@ class Play extends Phaser.Scene {
                     this.moveForward();
                     this.movedLeft = true;
                     this.movedRight = false;
-                    //this.player.setFrame(2); //play left leg frame
-                    //console.log('left step');
+                    //console.log('time between strides' + (this.lastRightStep - this.lastLeftStep));
                 } else if(this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA)) { //Double A press causes trip
                     this.doTrip('repeat');
                     this.justTripped = true;
@@ -491,8 +527,7 @@ class Play extends Phaser.Scene {
                     this.moveForward();
                     this.movedRight = true;
                     this.movedLeft = false;
-                    //this.player.setFrame(1); //play right leg frame
-                    //console.log('right step');
+                    //console.log('time between strides' + (this.lastRightStep - this.lastLeftStep));
                 } else if(this.movedRight && Phaser.Input.Keyboard.JustDown(keyD)) { //Double D press causes trip
                     this.doTrip('repeat');
                     this.justTripped = true;
@@ -606,6 +641,7 @@ class Play extends Phaser.Scene {
 
         //Press ESC to return to Menu
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.soundtrack.stop();
             this.scene.start("menuScene");
         }
     }
