@@ -20,7 +20,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
         this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
         this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
-        this.loud.audio('soundtrack', 'soundtrack.wav');
+        this.load.audio('soundtrack', 'soundtrack.wav');
     }
 
     moveForward() {
@@ -194,7 +194,7 @@ class Play extends Phaser.Scene {
         this.lastRightStep = 0;
         this.tripSpeed = 10; //Minimum frames inbetween steps that causes trip
         this.stepsTraveled = 0;
-        this.strafeDistance = 24; //How far to strafe when player presses keyLEFT, or keyRIGHT //was 8 before
+        this.strafeDistance = 20; //How far to strafe when player presses keyLEFT, or keyRIGHT //was 8 before
         this.moveDistance = 16; //How far to mave when player takes a step
         this.maxEnemies = 5;
         this.enemySpawnTime = 2000; //How many ms to spawn an enemy
@@ -259,7 +259,7 @@ class Play extends Phaser.Scene {
         //this.anims.create({ key: 'playerAtlas', frames: this.anims.generateFrameNumbers('playerAtlas', { start: 0, end: 0, first: 0}), frameRate: 15 });
         this.player = this.physics.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
         this.player.setBodySize(this.player.width, this.player.height/6, true);
-        this.player.setOffset(0, 110);
+        this.player.setOffset(0, 130);
 
         //Create Animations
         this.anims.create({
@@ -369,6 +369,7 @@ class Play extends Phaser.Scene {
         this.playerLayer = this.add.layer();
         this.playerLayer.add([this.player]);
         this.enemyLayer = this.add.layer();
+        //this.superEnemyLayer = this.add.layer();
 
         // const enemyLayer = this.add.layer();
         // enemyLayer.add(this.enemies.getChildren());
@@ -404,17 +405,21 @@ class Play extends Phaser.Scene {
             if(this.onTopSW) {
                 if(this.player.x > game.config.width/2 - 30) {
                     this.enemyLayer.setDepth(1);
-                    this.playerLayer.setDepth(2);
+                    //this.superEnemyLayer.setDepth(2);
+                    this.playerLayer.setDepth(3);
                 } else {
-                    this.enemyLayer.setDepth(2);
+                    this.enemyLayer.setDepth(3);
+                    //this.superEnemyLayer.setDepth(2);
                     this.playerLayer.setDepth(1);
                 }
             } else if(this.onBottomSW) {
                 if(this.player.x > game.config.width/2) {
                     this.enemyLayer.setDepth(1);
-                    this.playerLayer.setDepth(2);
+                    //this.superEnemyLayer.setDepth(2);
+                    this.playerLayer.setDepth(3);
                 } else {
-                    this.enemyLayer.setDepth(2);
+                    this.enemyLayer.setDepth(3);
+                    //this.superEnemyLayer.setDepth(2);
                     this.playerLayer.setDepth(1);
                 }
             }

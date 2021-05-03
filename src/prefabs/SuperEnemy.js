@@ -40,7 +40,7 @@ class SuperEnemy extends Phaser.Physics.Arcade.Sprite {
         //Change hitbox
         if(this.onCreate) {
             this.setSize(this.width, this.height/6, true);
-            this.setOffset(0, 110);
+            this.setOffset(0, 130);
             this.onCreate = false
         }
 
