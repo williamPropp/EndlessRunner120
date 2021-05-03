@@ -144,7 +144,7 @@ class Play extends Phaser.Scene {
                 }
 
                 this.sorryText = this.sorryArray[Math.floor(Math.random()*this.sorryArray.length)];
-                let sorry = this.add.text(this.playerInitX, this.playerInitY-40, this.sorryText, { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' }).setOrigin(0.5,0);
+                let sorry = this.add.text(this.player.x, this.player.y-40, this.sorryText, { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' }).setOrigin(0.5,0);
                 this.time.delayedCall(1500, () => {
                     sorry.destroy();
                 });
