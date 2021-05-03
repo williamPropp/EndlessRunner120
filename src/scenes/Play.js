@@ -265,6 +265,11 @@ class Play extends Phaser.Scene {
         this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0); //replace
         this.bg.angle = -20;
 
+        //create transition rectangle
+        this.rectangle = this.add.rectangle(0,0, game.config.width, game.config.height, 0xf8f8ff).setOrigin(0,0);
+        this.rectangle.alpha = 0;
+
+
         //Create crosswalk
         this.crosswalk = this.add.tileSprite(275, 201, 247, 368, 'cross').setOrigin(0,0);
         this.crosswalk.angle = 6.5;
@@ -426,12 +431,26 @@ class Play extends Phaser.Scene {
         //While gameOver = false
         if(!this.gameOver) {
 
+            //transitions
+            if(this.stepsTraveled >= 15 && this.stepsTraveled <= 20){
+                this.rectangle.alpha = (this.stepsTraveled - 15) / 5;
+            }
+            else if(this.stepsTraveled <= 25 && this.stepsTraveled >= 20) {
+                this.rectangle.alpha = (this.stepsTraveled - 25) * -1 / 5;
+            }
+            else if(this.stepsTraveled >= 45 && this.stepsTraveled <= 50){
+                this.rectangle.alpha = (this.stepsTraveled - 45) / 5;
+            }
+            else if(this.stepsTraveled <= 55 && this.stepsTraveled >= 50) {
+                this.rectangle.alpha = (this.stepsTraveled - 55) * -1 / 5;
+            }
+
             //change backgrounds
             if(this.stepsTraveled > 20) {
                 this.bg.destroy;
                 this.bg.setTexture('city');
             }
-            if(this.stepsTraveled > 40) {
+            if(this.stepsTraveled > 50) {
                 this.bg.destroy;
                 this.bg.setTexture('sea');
             }
