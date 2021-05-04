@@ -8,7 +8,7 @@ class Menu extends Phaser.Scene {
 
         //Load all assets
         this.load.path = './assets/';
-        this.load.image('menuScreen', 'tempMenu.png');
+        this.load.image('menuScreen', 'Menu.png');
         this.load.audio('soundtrackMenu', 'soundtrackMenu.wav');
 
     }
