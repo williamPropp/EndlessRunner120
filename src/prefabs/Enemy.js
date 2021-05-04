@@ -9,13 +9,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.mvmtX = 15 / 5;
         this.mvmtY = 5.5 / 5;
 
-        // scene.load.image('speechBubble', '../../assets/Speech_Bubble.png');
-        // this.speechBubble = scene.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble').setOrigin(0,0);
-        // this.speechBubble = speechBubble;
+
         this.insultTextConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' };
-        this.enemyInsult = scene.add.text(this.x-120, this.y-20, this.genInsult(), this.insultTextConfig).setOrigin(0.5,0);
+        this.enemyInsult = scene.add.text(this.x, this.y-25, this.genInsult(), this.insultTextConfig).setOrigin(0.5,0);
         this.enemyInsult.alpha = 0;
-       // this.speechBubble.alpha = 0;
 
         this.onCreate = true;
     }
@@ -41,16 +38,12 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         if(this.onCreate) {
             this.setSize(this.width, this.height/6, true);
             this.setOffset(0, 130);
-            this.onCreate = false
+            this.onCreate = false;
         }
 
         //Move Enemy
         this.x -= this.mvmtX;
         this.y += this.mvmtY;
-
-        //Move Speech Bubble
-        // this.speechBubble.x -= this.mvmtX;
-        // this.speechBubble.y += this.mvmtY;
 
         //Move Insult text
         this.enemyInsult.x -= this.mvmtX;

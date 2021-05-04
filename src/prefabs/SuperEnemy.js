@@ -13,7 +13,7 @@ class SuperEnemy extends Phaser.Physics.Arcade.Sprite {
         // this.speechBubble = scene.add.sprite(150, 100, this.x-120, this.y-80, 'speechBubble').setOrigin(0,0);
         // this.speechBubble = speechBubble;
         this.insultTextConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' };
-        this.enemyInsult = scene.add.text(this.x-120, this.y-20, this.genInsult(), this.insultTextConfig).setOrigin(0.5,0);
+        this.enemyInsult = scene.add.text(this.x, this.y-25, this.genInsult(), this.insultTextConfig).setOrigin(0.5,0);
         this.enemyInsult.alpha = 0;
        // this.speechBubble.alpha = 0;
 
@@ -41,7 +41,7 @@ class SuperEnemy extends Phaser.Physics.Arcade.Sprite {
         if(this.onCreate) {
             this.setSize(this.width, this.height/6, true);
             this.setOffset(0, 130);
-            this.onCreate = false
+            this.onCreate = false;
         }
 
         //Move Enemy

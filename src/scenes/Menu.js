@@ -10,6 +10,7 @@ class Menu extends Phaser.Scene {
         this.load.path = './assets/';
         this.load.image('menuScreen', 'Menu.png');
         this.load.audio('soundtrackMenu', 'soundtrackMenu.wav');
+        this.load.audio('beep', 'buttonPress.wav');
 
     }
 
@@ -21,11 +22,16 @@ class Menu extends Phaser.Scene {
         //Add music to the scene
         this.soundtrackMenu = this.sound.add('soundtrackMenu', {
             volume: 0.3,
-            rate: 0.9,
+            //rate: 0.9,
             loop: true,
         });
         this.soundtrackMenu.play();
-        
+
+        //Add beep sound to the scene
+        this.beep = this.sound.add('beep', {
+            volume: 0.8,
+            loop: false,
+        });
 
         //Reset rate when scene resets
         this.soundtrackMenu.setRate(0.9);
@@ -41,12 +47,15 @@ class Menu extends Phaser.Scene {
         //Start game when F is pressed
         if(this.keyF.isDown) {
             this.soundtrackMenu.stop();
+            this.beep.play();
             this.scene.start("playScene");
+
         }
 
         //Show tutorial when R is pressed
         if(this.keyR.isDown) {
             this.soundtrackMenu.stop();
+            this.beep.play();
             this.scene.start("tutorialScene");
         }
     }

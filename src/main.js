@@ -1,3 +1,9 @@
+// Left, Right: and Endless Walker
+// Collaborators: Ivan Garcia-Sanchez, Jesus Picos, William Propp
+// Date Completed: 5/3/2021
+// Creative Tilt: 
+
+
 let config = {
     type: Phaser.Canvas,
     width: 960,
@@ -5,7 +11,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
         }
     },
     scene: [Menu, Tutorial, Play]

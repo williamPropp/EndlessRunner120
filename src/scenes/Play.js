@@ -23,6 +23,28 @@ class Play extends Phaser.Scene {
         this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
         this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
         this.load.audio('soundtrack', 'soundtrack.wav');
+
+        //Load Audio
+        this.load.audio('dmg', '/SFX/dmg.wav');
+        this.load.audio('EE', '/SFX/EE.mp3');
+        this.load.audio('ER', '/SFX/ER.mp3');
+        this.load.audio('AH', '/SFX/AH.mp3');
+        this.load.audio('high1', '/SFX/high1.mp3');
+        this.load.audio('high2', '/SFX/high2.mp3');
+        this.load.audio('high3', '/SFX/high3.mp3');
+        this.load.audio('high4', '/SFX/high4.mp3');
+        this.load.audio('low1', '/SFX/low1.mp3');
+        this.load.audio('low2', '/SFX/low2.mp3');
+        this.load.audio('low3', '/SFX/low3.mp3');
+        this.load.audio('low4', '/SFX/low4.mp3');
+        this.load.audio('left1', '/SFX/left1.mp3');
+        this.load.audio('left2', '/SFX/left2.mp3');
+        this.load.audio('left3', '/SFX/left3.mp3');
+        this.load.audio('left4', '/SFX/left4.mp3');
+        this.load.audio('right1', '/SFX/right1.mp3');
+        this.load.audio('right2', '/SFX/right2.mp3');
+        this.load.audio('right3', '/SFX/right3.mp3');
+        this.load.audio('right4', '/SFX/right4.mp3');
     }
 
     moveForward() {
@@ -53,6 +75,9 @@ class Play extends Phaser.Scene {
 
 
     doTrip(fastOrRepeat) {
+        this.sound.play('dmg', {
+            volume: 0.7,
+        });
         if(fastOrRepeat == 'fast') {
             console.log('you walked too fast, and you tripped');
         } else if(fastOrRepeat == 'repeat') {
@@ -129,6 +154,8 @@ class Play extends Phaser.Scene {
 
     enemyCollide(player, enemy) {  
         if(!this.justCollided){
+            //Play Sound
+            this.playEnemySound();
             if(this.enemies.contains(enemy)) {
                 this.takeDmg(1);
             }
@@ -144,7 +171,7 @@ class Play extends Phaser.Scene {
                 }
 
                 this.sorryText = this.sorryArray[Math.floor(Math.random()*this.sorryArray.length)];
-                let sorry = this.add.text(this.player.x, this.player.y-40, this.sorryText, { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' }).setOrigin(0.5,0);
+                let sorry = this.add.text(this.player.x, this.player.y-25, this.sorryText, { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'left' }).setOrigin(0.5,0);
                 this.time.delayedCall(1500, () => {
                     sorry.destroy();
                 });
@@ -157,6 +184,7 @@ class Play extends Phaser.Scene {
     takeDmg(value) {
         this.playerHealth -= value;
         this.cameras.main.shake(200);
+        
         console.log('you took ' + value + ' damage, now playerHealth = ' + this.playerHealth);
 
         //Initialize array of hb sprites
@@ -178,6 +206,30 @@ class Play extends Phaser.Scene {
         } else if(this.playerHealth > this.playerHealthMax) {
             this.playerHealth = this.playerHealthMax;
         }
+    }
+
+    playFootstep(leftOrRight) {
+        let leftSteps = ['left1', 'left2', 'left3', 'left4'];
+        let rightSteps = ['right1', 'right2', 'right3', 'right4'];
+        let footstep;
+        if(leftOrRight == 'left') {
+            footstep = leftSteps[Math.floor(Math.random()*leftSteps.length)];
+        } else {
+            footstep = rightSteps[Math.floor(Math.random()*rightSteps.length)];
+        }
+        this.sound.play(footstep, {
+            volume: 0.6,
+            rate: 2,
+        });
+    }
+
+    playEnemySound() {
+        let voiceArray = ['EE', 'ER', 'AH', 'high1', 'high2', 'high3', 'high4', 'low1', 'low2', 'low3', 'low4'];
+        let enemySound = voiceArray[Math.floor(Math.random()*voiceArray.length)];
+        //console.log(enemySound);
+        this.sound.play(enemySound, {
+            volume: 0.7,
+        });
     }
 
     doGameOver() {
@@ -215,7 +267,6 @@ class Play extends Phaser.Scene {
         this.maxEnemies = 5;
         this.enemySpawnTime = 2000; //How many ms to spawn an enemy
         this.directionTimer = 1000; //How many ms to change enemy direction
-        //this.soundConst = 20;
 
         //Initialize location variables
         this.playerInitX = game.config.width / 2; //Initial Player x, y
@@ -246,7 +297,7 @@ class Play extends Phaser.Scene {
         //Add music to the scene
         this.soundtrack = this.sound.add('soundtrack', {
             volume: 0.3,
-            rate: 0.9,
+            //rate: 0.9,
             loop: true,
         });
         this.soundtrack.play();
@@ -256,10 +307,8 @@ class Play extends Phaser.Scene {
         this.soundtrack.setRate(0.9);
 
         //Create string arrays for speech bubbles
-        // this.enemyInsults = ['HEY, watch it buddy!', 'BRO?!', 'seriously...', '*hard sigh*', '&%$#%$#!!!']; //feel free to add more phrases
         this.sorryArray = ['SORRY', 'omg I\'m so sorry', 'sorry', 'oops! sorry', 'oh no! sorry', 'I\'m stupid', 'oh god why me', 'please no']; //feel free to add more phrases
         this.sorryText = this.sorryArray[Math.floor(Math.random()*this.sorryArray.length)];
-        //this.doIKnowThatGuy = ['Wait, oh no, do I know him from somewhere?', 'shoot, is that Jerry??']; //This is for super enemy if we add them
 
         //Add background
         this.bg = this.add.tileSprite(-375, 90, game.config.width*2, game.config.height*2, 'background').setOrigin(0,0); //replace
@@ -293,7 +342,6 @@ class Play extends Phaser.Scene {
         this.distanceSteps = this.add.text(this.distanceTextX, this.distanceTextY + 35, this.stepsTraveled + ' steps', distanceTextConfig);
 
         //Create character
-        //this.anims.create({ key: 'playerAtlas', frames: this.anims.generateFrameNumbers('playerAtlas', { start: 0, end: 0, first: 0}), frameRate: 15 });
         this.player = this.physics.add.sprite(this.playerInitX, this.playerInitY, 'player').setOrigin(0,0);
         this.player.setBodySize(this.player.width, this.player.height/6, true);
         this.player.setOffset(0, 130);
@@ -347,7 +395,7 @@ class Play extends Phaser.Scene {
                 prefix: 'super_',
                 suffix: '.png'
             }),
-            frameRate: 8,
+            frameRate: 13,
             repeat: -1
         });
 
@@ -447,31 +495,17 @@ class Play extends Phaser.Scene {
 
             //change backgrounds
             if(this.stepsTraveled > 20) {
-                this.bg.destroy;
+                //this.bg.destroy();
                 this.bg.setTexture('city');
             }
             if(this.stepsTraveled > 50) {
-                this.bg.destroy;
+                //this.bg.destroy();
                 this.bg.setTexture('sea');
             }
 
-            //change soundtrack speed based on step speed
-            // let stepSpeed = Math.abs(this.lastRightStep - this.lastLeftStep);
-            // let soundtrackSpeed = this.soundConst / stepSpeed;
-            // soundtrackSpeed /= 3;
-            // soundtrackSpeed.toFixed(1);
-            // soundtrackSpeed *= 3;
-            // soundtrackSpeed = Phaser.Math.Clamp(soundtrackSpeed, 0.1, 2);
-            // if(soundtrackSpeed > 2) {
-            //     soundtrackSpeed = 2;
-            // } else if(soundtrackSpeed < 0.1) {
-            //     soundtrackSpeed = 0.1;
-            // }
-            // this.soundtrack.setRate(soundtrackSpeed);
-
             //Handle layers to make it seem 3D
             if(this.onTopSW) {
-                if(this.player.x > game.config.width/2 - 30) {
+                if(this.player.x >= this.playerInitX) {
                     this.enemyLayer.setDepth(1);
                     //this.superEnemyLayer.setDepth(2);
                     this.playerLayer.setDepth(3);
@@ -542,6 +576,7 @@ class Play extends Phaser.Scene {
                     this.lastLeftStep = this.frameCounter;
                     this.player.play('playerLeft');
                     this.moveForward();
+                    this.playFootstep('left');
                     this.movedLeft = true;
                     this.movedRight = false;
                     //console.log('time between strides' + (this.lastRightStep - this.lastLeftStep));
@@ -555,6 +590,7 @@ class Play extends Phaser.Scene {
                 if(!this.movedRight && Phaser.Input.Keyboard.JustDown(keyD)) {
                     this.lastRightStep = this.frameCounter;
                     this.player.play('playerRight');
+                    this.playFootstep('right');
                     this.moveForward();
                     this.movedRight = true;
                     this.movedLeft = false;
@@ -668,6 +704,10 @@ class Play extends Phaser.Scene {
         if(Phaser.Input.Keyboard.JustDown(keyX)) {
             this.playerHealth++;
             //console.log('playerHealth = ' + this.playerHealth);
+            // let voiceArray = ['EE', 'ER', 'AH', 'high1', 'high2', 'high3', 'high4', 'low1', 'low2', 'low3', 'low4'];
+            // this.sound.play(voiceArray[this.testInt]);
+            // console.log(voiceArray[this.testInt]);
+            // this.testInt++;
         }
 
         //Press ESC to return to Menu
