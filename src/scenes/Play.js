@@ -327,6 +327,8 @@ class Play extends Phaser.Scene {
         //create transition rectangle
         this.rectangle = this.add.rectangle(0,0, game.config.width, game.config.height, 0xf8f8ff).setOrigin(0,0);
         this.rectangle.alpha = 0;
+        this.last = 0;
+        this.transitioning = false;
 
 
         //Create crosswalk
@@ -523,25 +525,42 @@ class Play extends Phaser.Scene {
         if(!this.gameOver) {
 
             //Transition between backgrounds by fading to white
-            if(this.stepsTraveled >= 15 && this.stepsTraveled <= 20){
-                this.rectangle.alpha = (this.stepsTraveled - 15) / 5;
+            if(this.stepsTraveled >= this.last + 15 && this.stepsTraveled <= this.last + 20){
+                this.rectangle.alpha = (this.stepsTraveled - (this.last + 15)) / 5;
             }
-            else if(this.stepsTraveled <= 25 && this.stepsTraveled >= 20) {
-                this.rectangle.alpha = (this.stepsTraveled - 25) * -1 / 5;
+            else if(this.stepsTraveled <= this.last + 25 && this.stepsTraveled >= this.last + 20) {
+                this.rectangle.alpha = (this.stepsTraveled - (this.last + 25)) * -1 / 5;
+                if(this.stepsTraveled == this.last+25){
+                    this.last = this.stepsTraveled;
+                    console.log(this.last);
+                }
             }
-            else if(this.stepsTraveled >= 45 && this.stepsTraveled <= 50){
-                this.rectangle.alpha = (this.stepsTraveled - 45) / 5;
-            }
-            else if(this.stepsTraveled <= 55 && this.stepsTraveled >= 50) {
-                this.rectangle.alpha = (this.stepsTraveled - 55) * -1 / 5;
-            }
+            // else if(this.stepsTraveled >= 45 && this.stepsTraveled <= 50){
+            //     this.rectangle.alpha = (this.stepsTraveled - 45) / 5;
+            // }
+            // else if(this.stepsTraveled <= 55 && this.stepsTraveled >= 50) {
+            //     this.rectangle.alpha = (this.stepsTraveled - 55) * -1 / 5;
+            // }
 
             //Change backgrounds
-            if(this.stepsTraveled > 20) {
-                this.bg.setTexture('city');
+            if(this.stepsTraveled == this.last + 20 && this.transitioning == false) {
+                console.log(this.bg.displayTexture.key);
+                if(this.bg.displayTexture.key == 'background'){
+                    this.bg.setTexture('city');
+                    this.transitioning = true;
+                }
+                else if(this.bg.displayTexture.key == 'city'){
+                    this.bg.setTexture('sea');
+                    this.transitioning = true;
+                }
+                else if(this.bg.displayTexture.key == 'sea'){
+                    this.bg.setTexture('background');
+                    this.transitioning = true;
+                }
             }
-            if(this.stepsTraveled > 50) {
-                this.bg.setTexture('sea');
+
+            if(this.stepsTraveled == this.last + 21) {
+                this.transitioning = false;
             }
 
             // Speedlines logic
