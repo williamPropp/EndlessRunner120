@@ -111,11 +111,7 @@ class Play extends Phaser.Scene {
 
         let swOffsetX;
         let swOffsetY;
-
-        let enemyLayerArray = [this.enemyLayerTopLeft, this.enemyLayerTopRight, this.enemyLayerBottomLeft, this.enemyLayerBottomRight];
-
         let spawnLayer;
-
         let top, bottom, left, right = false;
 
         //Set x and y for either top or bottom spawn
