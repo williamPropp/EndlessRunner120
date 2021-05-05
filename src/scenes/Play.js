@@ -19,7 +19,7 @@ class Play extends Phaser.Scene {
         this.load.image('player', 'Player.png');
         this.load.image('cross', 'Crosswalk.png');
         this.load.image('super_enemy', 'Super_Enemy.png');
-        //this.load.spritesheet('speedLines', 'SpeedLines.png', {frameWidth: 960, frameHeight: 720, startFrame: 0, endFrame: 2});
+        this.load.spritesheet('speedLines', 'SpeedLines.png', {frameWidth: 960, frameHeight: 720, startFrame: 0, endFrame: 2});
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
         this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
         this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
@@ -355,15 +355,15 @@ class Play extends Phaser.Scene {
         this.player.setOffset(0, 130);
 
         //Create Animations
-        // this.anims.create({
-        //     key: 'speedLines',
-        //     frames: this.anims.generateFrameNumbers('speedLines', { start: 0, end: 2, first: 0}),
-        //     frameRate: 6,
-        //     repeat: 1
-        // })
-        // this.speedLines = this.add.sprite(0,0,'speedLines').setOrigin(0,0);
-        // this.speedLines.play('speedLines');
-        // this.speedLines.alpha = 0;
+        this.anims.create({
+            key: 'speedLines',
+            frames: this.anims.generateFrameNumbers('speedLines', { start: 0, end: 2, first: 0}),
+            frameRate: 6,
+            repeat: -1
+        })
+        this.speedLines = this.add.sprite(0,0,'speedLines').setOrigin(0,0);
+        this.speedLines.play('speedLines');
+        this.speedLines.alpha = 0;
 
         this.anims.create({
             key: 'playerLeft',
@@ -542,16 +542,19 @@ class Play extends Phaser.Scene {
                 this.bg.setTexture('sea');
             }
 
-            //Speedlines logic
-            // let speedLines = this.add.sprite(0,0,'speedLines').setOrigin(0,0);
-            // speedLines.alpha = 0;
-            // if((this.lastLeftStep - this.lastRightStep) <= this.tripSpeed * 2.5) {
-            //     speedLines.play('speedLines');
-            //     speedLines.alpha = ((this.lastLeftStep-this.lastRightStep) / 0.25)/100;
-            // } else {
-            //     speedLines.alpha = 0;
-            //     speedLines.destroy(); 
-            // }
+            // Speedlines logic
+            // this.speedLines = this.add.sprite(0,0,'speedLines').setOrigin(0,0);
+            // this.speedLines.alpha = 0;
+            if(Math.abs((this.lastLeftStep - this.lastRightStep)) <= this.tripSpeed * 2 && this.lastLeftStep != 0) {
+                //this.speedLines.play('speedLines');
+                this.speedLines.alpha = Math.abs(((this.lastLeftStep-this.lastRightStep) / 0.3) / 100);
+            } else {
+                //this.speedLines.alpha = 0;
+                //this.speedLines.destroy(); 
+            }
+            this.time.delayedCall(1000, () => {
+                this.speedLines.alpha = 0;
+            });
 
             //Handle layers to make it seem 3D
             if(this.onTopSW) {
