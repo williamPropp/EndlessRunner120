@@ -85,8 +85,11 @@ class Tutorial extends Phaser.Scene {
         this.add.text(5, 10, 'Press F to play', tutorialSmallConfig);
         this.add.text(5, 45, 'Press ESC to Return to Menu', tutorialSmallConfig);
         let tutorialBigConfig = { fontFamily: 'Helvetica', fontSize: '32px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center' };
-        this.add.text(game.config.width/2 - 40, game.config.height/4 - 40, 'Press A to step with your left foot', tutorialBigConfig).setOrigin(0.5,0);
-        this.add.text(game.config.width/2 - 35, game.config.height/4 + 10, 'Press D to step with your right foot', tutorialBigConfig).setOrigin(0.5,0);
+        this.add.text(game.config.width/2 - 35, game.config.height/4 - 70, 'Press A to step with your left foot', tutorialBigConfig).setOrigin(0.5,0);
+        this.add.text(game.config.width/2 - 35, game.config.height/4 - 20, 'Press D to step with your right foot', tutorialBigConfig).setOrigin(0.5,0);
+        tutorialBigConfig.fontSize = '20px';
+        this.add.text(game.config.width/2 - 35, game.config.height/4 + 20, '(Mess up your footing or walk too fast and you will trip)', tutorialBigConfig).setOrigin(0.5,0);
+        tutorialBigConfig.fontSize = '32px';
         this.add.text(game.config.width/2 - 20, game.config.height/4 + 120, 'Press SPACEBAR to get up if you trip', tutorialBigConfig).setOrigin(0.5,0);
         this.add.text(game.config.width/2 + 20, game.config.height/4 + 250, 'Avoid ppl by using the LEFT and RIGHT arrow keys', tutorialBigConfig).setOrigin(0.5,0);
         this.add.text(game.config.width/2, game.config.height/4 + 430, 'Cross the street using UP and DOWN arrow keys', tutorialBigConfig).setOrigin(0.5,0);
