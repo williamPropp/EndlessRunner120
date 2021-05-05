@@ -521,15 +521,14 @@ class Play extends Phaser.Scene {
 
         //While gameOver = false
         if(!this.gameOver) {
-
             //Transition between backgrounds by fading to white
-            if(this.stepsTraveled >= this.last + 15 && this.stepsTraveled <= this.last + 20){
-                this.rectangle.alpha = (this.stepsTraveled - (this.last + 15)) / 5;
+            if(this.stepsTraveled >= this.last + 45 && this.stepsTraveled < this.last + 50){
+                this.rectangle.alpha = (this.stepsTraveled - (this.last + 45)) / 5;
             }
-            else if(this.stepsTraveled <= this.last + 25 && this.stepsTraveled >= this.last + 20) {
-                this.rectangle.alpha = (this.stepsTraveled - (this.last + 25)) * -1 / 5;
-                if(this.stepsTraveled == this.last+25){
-                    this.last = this.stepsTraveled;
+            else if(this.stepsTraveled <= this.last + 55 && this.stepsTraveled >= this.last + 50) {
+                this.rectangle.alpha = (this.stepsTraveled - (this.last + 55)) * -1 / 5;
+                if(this.stepsTraveled == this.last + 55){
+                    this.last = this.stepsTraveled; 
                     console.log(this.last);
                 }
             }
@@ -541,7 +540,7 @@ class Play extends Phaser.Scene {
             // }
 
             //Change backgrounds
-            if(this.stepsTraveled == this.last + 20 && this.transitioning == false) {
+            if(this.stepsTraveled == this.last + 50 && this.transitioning == false) {
                 console.log(this.bg.displayTexture.key);
                 if(this.bg.displayTexture.key == 'background'){
                     this.bg.setTexture('city');
@@ -557,7 +556,7 @@ class Play extends Phaser.Scene {
                 }
             }
 
-            if(this.stepsTraveled == this.last + 21) {
+            if(this.stepsTraveled == this.last + 51) {
                 this.transitioning = false;
             }
 
