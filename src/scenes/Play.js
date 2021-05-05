@@ -196,7 +196,9 @@ class Play extends Phaser.Scene {
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
     takeDmg(value) {
         this.playerHealth -= value;
-        this.cameras.main.shake(200);
+        if(value > 0) {
+            this.cameras.main.shake(200);
+        }
 
         //Initialize array of hb sprites
         let hbArray = [this.hb1, this.hb2, this.hb3, this.hb4];
@@ -545,13 +547,25 @@ class Play extends Phaser.Scene {
             // Speedlines logic
             // this.speedLines = this.add.sprite(0,0,'speedLines').setOrigin(0,0);
             // this.speedLines.alpha = 0;
-            if(Math.abs((this.lastLeftStep - this.lastRightStep)) <= this.tripSpeed * 2 && this.lastLeftStep != 0) {
+            let vel = Math.abs((this.lastLeftStep - this.lastRightStep));
+            if(vel <= this.tripSpeed * 2.5 && this.lastLeftStep != 0 && !this.justTripped) {
+                if(vel > this.tripSpeed && vel <= this.tripSpeed + 3) {
+                    this.speedLines.alpha = 1;
+                } else if(vel > this.tripSpeed + 3 && vel <= this.tripSpeed + 6) {
+                    this.speedLines.alpha = 0.75;
+                } else if(vel > this.tripSpeed + 6 && vel <= this.tripSpeed + 9) {
+                    this.speedLines.alpha = 0.5;
+                } else if(vel > this.tripSpeed + 9 && vel <= this.tripSpeed + 12) {
+                    this.speedLines.alpha = 0.25;
+                } else {
+                    this.speedLines.alpha = 0.1;
+                }
                 //this.speedLines.play('speedLines');
-                this.speedLines.alpha = Math.abs(((this.lastLeftStep-this.lastRightStep) / 0.3) / 100);
-            } else {
+                //this.speedLines.alpha = Math.abs(((this.lastLeftStep-this.lastRightStep) / 0.3) / 100);
+            } /*else {*/
                 //this.speedLines.alpha = 0;
                 //this.speedLines.destroy(); 
-            }
+            // }
             this.time.delayedCall(1000, () => {
                 this.speedLines.alpha = 0;
             });
@@ -757,7 +771,7 @@ class Play extends Phaser.Scene {
 
         //Press X to add 1 to playerHealth
         if(Phaser.Input.Keyboard.JustDown(keyX)) {
-            this.playerHealth++;
+            this.takeDmg(-1);
         }
 
         //Press ESC to return to Menu
