@@ -52,11 +52,6 @@ class Play extends Phaser.Scene {
         this.crosswalk.x -= 15;
         this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
-        // for(let enemy of this.enemies.getChildren()) {
-        //     enemy.x -= 15;
-        //     enemy.x += 5.5;
-        // }
-        //console.log(this.crosswalk.y - this.player.y)
     }
 
     doStrafe(direction) {
@@ -88,6 +83,7 @@ class Play extends Phaser.Scene {
         this.player.angle = 90; //Make player 'trip'
         this.player.x += 180; //Correct x, y after rotation
         this.player.y += 80;
+        this.player.setOffset(-100,0); //Correct hitbox
     }
 
     //Spawn enemy on either side of the street
@@ -234,6 +230,7 @@ class Play extends Phaser.Scene {
 
     doGameOver() {
         this.gameOver = true;
+        this.player.stop();
         for(let enemy of this.enemies.getChildren()) {
             enemy.stop();
         }
@@ -623,6 +620,7 @@ class Play extends Phaser.Scene {
                 this.player.angle = 0;
                 this.player.x -= 180; //Correct x, y after rotation
                 this.player.y -= 80;
+                this.player.setOffset(0, 130); //Correct hitbox
 
                 this.moveForward();
                 this.lastLeftStep = 0;
