@@ -99,7 +99,6 @@ class Play extends Phaser.Scene {
         this.player.angle = 90; //Make player 'trip'
         this.player.x += 180; //Correct x, y after rotation
         this.player.y += 80;
-        // this.player.setOffset(-100,0); //Correct hitbox
         this.player.setOffset(-100,10); //Correct hitbox
     }
 
@@ -204,12 +203,48 @@ class Play extends Phaser.Scene {
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
     takeDmg(value) {
         this.playerHealth -= value;
-        if(value > 0) {
-            this.cameras.main.shake(200);
-        }
 
         //Initialize array of hb sprites
         let hbArray = [this.hb1, this.hb2, this.hb3, this.hb4];
+
+        if(value > 0) { //Do this when damage is taken 
+            this.cameras.main.shake(200);
+            for(let hbAll of hbArray) {
+                hbAll.setTint(0xFF00FF); //Give HB red tint
+                hbAll.setScale(1.05);
+                this.hbOverlay.setScale(1.05);
+                this.time.delayedCall(100, () => { //every 100 ms, increase HB size a bit, then revert, increase, then revert, etc.
+                    hbAll.setScale();
+                    this.hbOverlay.setScale();
+                    this.time.delayedCall(100, () => {
+                        hbAll.setScale(1.05);
+                        this.hbOverlay.setScale(1.05);
+                        this.time.delayedCall(100, () => {
+                            hbAll.setScale();
+                            this.hbOverlay.setScale();
+                            this.time.delayedCall(100, () => {
+                                hbAll.setScale(1.05);
+                                this.hbOverlay.setScale(1.05);
+                            });
+                        });
+                    });
+                });
+
+                this.time.delayedCall(600, () => {
+                    hbAll.setTint();
+                    hbAll.setScale();
+                    this.hbOverlay.setScale();
+                });
+            }
+            
+        } else { //Do this when cheat code is used to gain health
+            for(let hbAll of hbArray) {
+                hbAll.setTint(0x00FF00); //Give HB green tint
+                this.time.delayedCall(400, () => {
+                    hbAll.setTint();
+                });
+            }
+        }
 
         if(this.playerHealth < 1) {
             this.doGameOver();
@@ -261,8 +296,6 @@ class Play extends Phaser.Scene {
         for(let superEnemy of this.superEnemies.getChildren()) {
             superEnemy.stop();
         }
-        // this.add.text(game.config.width / 3, game.config.height / 2, 'GAMEOVER', { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
-        // this.add.text((game.config.width / 5) * 2, (game.config.height / 7) * 4, 'press R to restart', { fontFamily: 'Helvetica', fontSize: '30px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'right' });
         
         //Make gameOverText visible
         this.gameOverText.alpha = 1;
