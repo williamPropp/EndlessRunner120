@@ -1,4 +1,4 @@
-// Left, Right: and Endless Walker
+// Left, Right: an Endless Walker
 // Collaborators: Ivan Garcia-Sanchez, Jesus Picos, William Propp
 // Date Completed: 5/3/2021
 /* Creative Tilt: For technicality, we implemented Phaser's layer system. It was important 
@@ -29,4 +29,4 @@ let config = {
 
 let game = new Phaser.Game(config);
 
-let keyF, keyA, keyD, keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE, keyG, keyR, keyX, keyZ, keyE, keyESC;
+let keyF, keyA, keyD, keyLEFT, keyRIGHT, keyUP, keyDOWN, keySPACE, keyG, keyR, keyX, keyZ, keyC, keyE, keyESC;

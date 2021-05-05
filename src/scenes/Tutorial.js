@@ -109,12 +109,14 @@ class Tutorial extends Phaser.Scene {
         //Start game when F is pressed
         if(this.keyF.isDown) {
             this.beep.play();
+            this.soundtrackTutorial.stop();
             this.scene.start("playScene");
         }
 
         //Return to Menu when R is pressed
         if(this.keyESC.isDown) {
             this.beep.play();
+            this.soundtrackTutorial.stop();
             this.scene.start("menuScene");
         }
 

@@ -25,6 +25,9 @@ class Play extends Phaser.Scene {
         this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
         this.load.atlas('player_down', 'Player_Down.png', 'Player_Down.json');
         this.load.audio('soundtrack', 'soundtrack.mp3');
+        this.load.audio('tripSound1', 'tripSound1.mp3');
+        this.load.audio('tripSound2', 'tripSound2.mp3');
+        this.load.audio('tripSound3', 'tripSound3.mp3');
 
         //Load Audio
         this.load.audio('dmg', '/SFX/dmg.wav');
@@ -80,6 +83,10 @@ class Play extends Phaser.Scene {
 
     doTrip(fastOrRepeat) {
         this.sound.play('dmg', {
+            volume: 0.7,
+        });
+        let tripSound = this.tripArray[(Math.floor(Math.random()*this.tripArray.length))];
+        this.sound.play(tripSound, {
             volume: 0.7,
         });
         if(fastOrRepeat == 'fast') {
@@ -306,6 +313,13 @@ class Play extends Phaser.Scene {
         this.onTopSW = false;
         this.onBottomSW = true;
 
+        //BG array for cheat code
+        this.bgArray = ['background', 'city', 'sea'];
+        this.currentBG = 'background';
+
+        //Trip sound array
+        this.tripArray = ['tripSound1', 'tripSound2', 'tripSound3'];
+
         //Add music to the scene
         this.soundtrack = this.sound.add('soundtrack', {
             volume: 0.3,
@@ -511,6 +525,7 @@ class Play extends Phaser.Scene {
         keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
         keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
@@ -548,14 +563,17 @@ class Play extends Phaser.Scene {
                 console.log(this.bg.displayTexture.key);
                 if(this.bg.displayTexture.key == 'background'){
                     this.bg.setTexture('city');
+                    this.currentBG = 'city';
                     this.transitioning = true;
                 }
                 else if(this.bg.displayTexture.key == 'city'){
                     this.bg.setTexture('sea');
+                    this.currentBG = 'sea';
                     this.transitioning = true;
                 }
                 else if(this.bg.displayTexture.key == 'sea'){
                     this.bg.setTexture('background');
+                    this.currentBG = 'background';
                     this.transitioning = true;
                 }
             }
@@ -568,25 +586,21 @@ class Play extends Phaser.Scene {
             // this.speedLines = this.add.sprite(0,0,'speedLines').setOrigin(0,0);
             // this.speedLines.alpha = 0;
             let vel = Math.abs((this.lastLeftStep - this.lastRightStep));
-            if(vel <= this.tripSpeed * 2.5 && this.lastLeftStep != 0 && !this.justTripped) {
+            if(vel <= this.tripSpeed * 2 && this.lastLeftStep != 0 && !this.justTripped) {
                 if(vel > this.tripSpeed && vel <= this.tripSpeed + 3) {
-                    this.speedLines.alpha = 1;
+                    this.speedLines.alpha = 0.8;
+                    this.cameras.main.shake(250, 0.002);
                 } else if(vel > this.tripSpeed + 3 && vel <= this.tripSpeed + 6) {
-                    this.speedLines.alpha = 0.75;
+                    this.speedLines.alpha = 0.4;
+                    this.cameras.main.shake(250, 0.001);
                 } else if(vel > this.tripSpeed + 6 && vel <= this.tripSpeed + 9) {
-                    this.speedLines.alpha = 0.5;
-                } else if(vel > this.tripSpeed + 9 && vel <= this.tripSpeed + 12) {
-                    this.speedLines.alpha = 0.25;
-                } else {
                     this.speedLines.alpha = 0.1;
+                    this.cameras.main.shake(250, 0.0005);
+                } else {
+                    this.speedLines.alpha = 0.05;
                 }
-                //this.speedLines.play('speedLines');
-                //this.speedLines.alpha = Math.abs(((this.lastLeftStep-this.lastRightStep) / 0.3) / 100);
-            } /*else {*/
-                //this.speedLines.alpha = 0;
-                //this.speedLines.destroy(); 
-            // }
-            this.time.delayedCall(1000, () => {
+            }
+            this.time.delayedCall(500, () => {
                 this.speedLines.alpha = 0;
             });
 
@@ -792,6 +806,16 @@ class Play extends Phaser.Scene {
         //Press X to add 1 to playerHealth
         if(Phaser.Input.Keyboard.JustDown(keyX)) {
             this.takeDmg(-1);
+        }
+
+        //Press C to change background
+        if(Phaser.Input.Keyboard.JustDown(keyC)) {
+            this.bgArray.splice(this.bgArray.indexOf(this.currentBG), 1);
+            let bgIndex = Math.floor(Math.random() * this.bgArray.length);
+            let newBG = this.bgArray[bgIndex];
+            this.bg.setTexture(newBG);
+            this.currentBG = newBG;
+            this.bgArray = ['background', 'city', 'sea'];
         }
 
         //Press ESC to return to Menu
