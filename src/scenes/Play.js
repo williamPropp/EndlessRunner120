@@ -19,10 +19,12 @@ class Play extends Phaser.Scene {
         this.load.image('player', 'Player.png');
         this.load.image('cross', 'Crosswalk.png');
         this.load.image('super_enemy', 'Super_Enemy.png');
+        this.load.spritesheet('speedLines', 'SpeedLines.png', {frameWidth: 960, frameHeight: 720, startFrame: 0, endFrame: 2});
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
         this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
         this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
-        this.load.audio('soundtrack', 'soundtrack.wav');
+        this.load.atlas('player_down', 'Player_Down.png', 'Player_Down.json');
+        this.load.audio('soundtrack', 'soundtrack.mp3');
 
         //Load Audio
         this.load.audio('dmg', '/SFX/dmg.wav');
@@ -52,17 +54,24 @@ class Play extends Phaser.Scene {
         this.crosswalk.x -= 15;
         this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
+        for(let enemy of this.enemies.getChildren()) {
+            enemy.x -= 15;
+            enemy.y += 5.5;
+        }
+        for(let superEnemy of this.superEnemies.getChildren()) {
+            superEnemy.x -= 15;
+            superEnemy.y += 5.5;
+        }
+
     }
 
     doStrafe(direction) {
             if(direction == 'left' && this.player.y > this.swLeftBorder) {
                 this.player.y -= this.strafeDistance;
                 this.player.x -= this.strafeDistance;
-                //console.log('you strafed left');
             } else if(direction == 'right' && this.player.y < this.swRightBorder) {
                 this.player.y += this.strafeDistance;
                 this.player.x += this.strafeDistance;
-                //console.log('you strafed right');
             }
             this.movedLeft = false;
             this.movedRight = false;
@@ -83,7 +92,8 @@ class Play extends Phaser.Scene {
         this.player.angle = 90; //Make player 'trip'
         this.player.x += 180; //Correct x, y after rotation
         this.player.y += 80;
-        this.player.setOffset(-100,0); //Correct hitbox
+        // this.player.setOffset(-100,0); //Correct hitbox
+        this.player.setOffset(-100,10); //Correct hitbox
     }
 
     //Spawn enemy on either side of the street
@@ -102,49 +112,57 @@ class Play extends Phaser.Scene {
 
         let swOffsetX;
         let swOffsetY;
-        let consoleTopBottom;
-        let consoleLeftRight;
-
+        let spawnLayer;
+        let top, bottom, left, right = false;
 
         //Set x and y for either top or bottom spawn
         if(rndTopBottom == 0){
             swOffsetY = this.enemyInitBottomY;
             swOffsetX = this.enemyInitBottomX;
-            consoleTopBottom = 'enemy spawned on bottom sidewalk, ';
+            bottom = true;
         } else if(rndTopBottom == 1) {
             swOffsetY = this.enemyInitTopY;
             swOffsetX = this.enemyInitTopX;
-            consoleTopBottom = 'enemy spawned on top sidewalk, ';
+            top = true;
         }
 
         //Set x for either left or right spawn
         if(rndLeftRight == 0) { 
             swOffsetX += 50;
-            consoleLeftRight = 'left side';
+            left = true;
         } else if(rndLeftRight == 1) {
             swOffsetX += 280;
-            consoleLeftRight = 'right side';
+            right = true;
         }
 
         //Randomizes whether enemy is a SuperEnemy or not
-
+        let newEnemy;
         if (Math.random() < .75){
             //Create new enemy, add them to the enemies group, and play walking animation
-            let newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
+            newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
             this.enemies.add(newEnemy);
-            this.enemyLayer.add(newEnemy);
             newEnemy.play('enemyWalk');
-            console.log(consoleTopBottom + consoleLeftRight);
         }
         else{
-            let newEnemy = new SuperEnemy(this,swOffsetX, swOffsetY, 'Super_Enemy').setOrigin(0,0);
+            newEnemy = new SuperEnemy(this,swOffsetX, swOffsetY, 'Super_Enemy').setOrigin(0,0);
             this.superEnemies.add(newEnemy);
-            this.enemyLayer.add(newEnemy);
             newEnemy.play('super_walk');
-            console.log(consoleTopBottom + consoleLeftRight);
-            console.log("SuperEnemy spawned")
         }
 
+        if(top){
+            if(left) {
+                spawnLayer = this.enemyLayerTopLeft;
+            } else {
+                spawnLayer = this.enemyLayerTopRight;
+            }
+        } else {
+            if(left) {
+                spawnLayer = this.enemyLayerBottomLeft;
+            } else {
+                spawnLayer = this.enemyLayerBottomRight;
+            }
+        }
+        spawnLayer.add(newEnemy);
 
     }
 
@@ -179,9 +197,9 @@ class Play extends Phaser.Scene {
     //Pass takeDmg value n, where n = the amount of health to be removed from the player's health
     takeDmg(value) {
         this.playerHealth -= value;
-        this.cameras.main.shake(200);
-        
-        console.log('you took ' + value + ' damage, now playerHealth = ' + this.playerHealth);
+        if(value > 0) {
+            this.cameras.main.shake(200);
+        }
 
         //Initialize array of hb sprites
         let hbArray = [this.hb1, this.hb2, this.hb3, this.hb4];
@@ -222,7 +240,6 @@ class Play extends Phaser.Scene {
     playEnemySound() {
         let voiceArray = ['EE', 'ER', 'AH', 'high1', 'high2', 'high3', 'high4', 'low1', 'low2', 'low3', 'low4'];
         let enemySound = voiceArray[Math.floor(Math.random()*voiceArray.length)];
-        //console.log(enemySound);
         this.sound.play(enemySound, {
             volume: 0.7,
         });
@@ -270,8 +287,6 @@ class Play extends Phaser.Scene {
         this.playerInitY = ((game.config.height / 4) * 2) + 30;
         this.swLeftBorder = this.playerInitY - 40; //sidewalk borders
         this.swRightBorder = this.playerInitY + 20;
-        // this.swLeftTop = game.config.width - 120;
-        // this.swLeftBottom = game.config.width + 290;
         this.enemyInitTopX = game.config.width - 120;
         this.enemyInitBottomX = game.config.width + 290;
         this.enemyInitTopY = -150;
@@ -314,6 +329,8 @@ class Play extends Phaser.Scene {
         //create transition rectangle
         this.rectangle = this.add.rectangle(0,0, game.config.width, game.config.height, 0xf8f8ff).setOrigin(0,0);
         this.rectangle.alpha = 0;
+        this.last = 0;
+        this.transitioning = false;
 
 
         //Create crosswalk
@@ -344,6 +361,16 @@ class Play extends Phaser.Scene {
         this.player.setOffset(0, 130);
 
         //Create Animations
+        this.anims.create({
+            key: 'speedLines',
+            frames: this.anims.generateFrameNumbers('speedLines', { start: 0, end: 2, first: 0}),
+            frameRate: 6,
+            repeat: -1
+        })
+        this.speedLines = this.add.sprite(0,0,'speedLines').setOrigin(0,0);
+        this.speedLines.play('speedLines');
+        this.speedLines.alpha = 0;
+
         this.anims.create({
             key: 'playerLeft',
             frames: this.anims.generateFrameNames('steps', {
@@ -409,6 +436,19 @@ class Play extends Phaser.Scene {
             repeat: 0
         });
 
+        this.anims.create({
+            key: 'crossDown',
+            frames: this.anims.generateFrameNames('player_down', {
+                start: 1,
+                end: 12,
+                zeroPad: 2,
+                prefix: 'Player_Cross_',
+                suffix: '.png'
+            }),
+            frameRate: 8,
+            repeat: 0
+        });
+
         //Create enemy group
         this.enemies = this.physics.add.group({
             classType: Phaser.GameObjects.Sprite,
@@ -444,10 +484,20 @@ class Play extends Phaser.Scene {
         //Create Layers
         this.playerLayer = this.add.layer();
         this.playerLayer.add([this.player]);
-        this.enemyLayer = this.add.layer();
+        this.enemyLayerTopLeft = this.add.layer();
+        this.enemyLayerTopRight = this.add.layer();
+        this.enemyLayerBottomLeft = this.add.layer();
+        this.enemyLayerBottomRight = this.add.layer();
+
+        this.enemyLayerTopLeft.setDepth(1);
+        this.enemyLayerTopRight.setDepth(2);
+        this.enemyLayerBottomLeft.setDepth(3);
+        this.playerLayer.setDepth(4);
+        this.enemyLayerBottomRight.setDepth(5);
+
         this.UILayer = this.add.layer();
         this.UILayer.add([this.gameOverText, this.rToRestartText, this.distanceTravelledText, this.distanceSteps, this.hb1, this.hb2, this.hb3, this.hb4, this.hbOverlay]);
-        this.UILayer.setDepth(4);
+        this.UILayer.setDepth(6);
 
         //Define keys
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -475,50 +525,84 @@ class Play extends Phaser.Scene {
 
         //While gameOver = false
         if(!this.gameOver) {
-
             //Transition between backgrounds by fading to white
-            if(this.stepsTraveled >= 15 && this.stepsTraveled <= 20){
-                this.rectangle.alpha = (this.stepsTraveled - 15) / 5;
+            if(this.stepsTraveled >= this.last + 45 && this.stepsTraveled < this.last + 50){
+                this.rectangle.alpha = (this.stepsTraveled - (this.last + 45)) / 5;
             }
-            else if(this.stepsTraveled <= 25 && this.stepsTraveled >= 20) {
-                this.rectangle.alpha = (this.stepsTraveled - 25) * -1 / 5;
+            else if(this.stepsTraveled <= this.last + 55 && this.stepsTraveled >= this.last + 50) {
+                this.rectangle.alpha = (this.stepsTraveled - (this.last + 55)) * -1 / 5;
+                if(this.stepsTraveled == this.last + 55){
+                    this.last = this.stepsTraveled; 
+                    console.log(this.last);
+                }
             }
-            else if(this.stepsTraveled >= 45 && this.stepsTraveled <= 50){
-                this.rectangle.alpha = (this.stepsTraveled - 45) / 5;
-            }
-            else if(this.stepsTraveled <= 55 && this.stepsTraveled >= 50) {
-                this.rectangle.alpha = (this.stepsTraveled - 55) * -1 / 5;
-            }
+            // else if(this.stepsTraveled >= 45 && this.stepsTraveled <= 50){
+            //     this.rectangle.alpha = (this.stepsTraveled - 45) / 5;
+            // }
+            // else if(this.stepsTraveled <= 55 && this.stepsTraveled >= 50) {
+            //     this.rectangle.alpha = (this.stepsTraveled - 55) * -1 / 5;
+            // }
 
             //Change backgrounds
-            if(this.stepsTraveled > 20) {
-                this.bg.setTexture('city');
+            if(this.stepsTraveled == this.last + 50 && this.transitioning == false) {
+                console.log(this.bg.displayTexture.key);
+                if(this.bg.displayTexture.key == 'background'){
+                    this.bg.setTexture('city');
+                    this.transitioning = true;
+                }
+                else if(this.bg.displayTexture.key == 'city'){
+                    this.bg.setTexture('sea');
+                    this.transitioning = true;
+                }
+                else if(this.bg.displayTexture.key == 'sea'){
+                    this.bg.setTexture('background');
+                    this.transitioning = true;
+                }
             }
-            if(this.stepsTraveled > 50) {
-                this.bg.setTexture('sea');
+
+            if(this.stepsTraveled == this.last + 51) {
+                this.transitioning = false;
             }
+
+            // Speedlines logic
+            // this.speedLines = this.add.sprite(0,0,'speedLines').setOrigin(0,0);
+            // this.speedLines.alpha = 0;
+            let vel = Math.abs((this.lastLeftStep - this.lastRightStep));
+            if(vel <= this.tripSpeed * 2.5 && this.lastLeftStep != 0 && !this.justTripped) {
+                if(vel > this.tripSpeed && vel <= this.tripSpeed + 3) {
+                    this.speedLines.alpha = 1;
+                } else if(vel > this.tripSpeed + 3 && vel <= this.tripSpeed + 6) {
+                    this.speedLines.alpha = 0.75;
+                } else if(vel > this.tripSpeed + 6 && vel <= this.tripSpeed + 9) {
+                    this.speedLines.alpha = 0.5;
+                } else if(vel > this.tripSpeed + 9 && vel <= this.tripSpeed + 12) {
+                    this.speedLines.alpha = 0.25;
+                } else {
+                    this.speedLines.alpha = 0.1;
+                }
+                //this.speedLines.play('speedLines');
+                //this.speedLines.alpha = Math.abs(((this.lastLeftStep-this.lastRightStep) / 0.3) / 100);
+            } /*else {*/
+                //this.speedLines.alpha = 0;
+                //this.speedLines.destroy(); 
+            // }
+            this.time.delayedCall(1000, () => {
+                this.speedLines.alpha = 0;
+            });
 
             //Handle layers to make it seem 3D
             if(this.onTopSW) {
-                if(this.player.x >= this.playerInitX) {
-                    this.enemyLayer.setDepth(1);
-                    //this.superEnemyLayer.setDepth(2);
-                    this.playerLayer.setDepth(3);
-                } else {
-                    this.enemyLayer.setDepth(3);
-                    //this.superEnemyLayer.setDepth(2);
-                    this.playerLayer.setDepth(1);
-                }
+                this.enemyLayerTopLeft.setDepth(1);
+                this.playerLayer.setDepth(2);
+                this.enemyLayerTopRight.setDepth(3);
+                this.enemyLayerBottomLeft.setDepth(4);
+                this.enemyLayerBottomRight.setDepth(5);
             } else if(this.onBottomSW) {
-                if(this.player.x > game.config.width/2) {
-                    this.enemyLayer.setDepth(1);
-                    //this.superEnemyLayer.setDepth(2);
-                    this.playerLayer.setDepth(3);
-                } else {
-                    this.enemyLayer.setDepth(3);
-                    //this.superEnemyLayer.setDepth(2);
-                    this.playerLayer.setDepth(1);
-                }
+                this.enemyLayerTopLeft.setDepth(1);
+                this.enemyLayerTopRight.setDepth(2);
+                this.enemyLayerBottomLeft.setDepth(3);
+                this.playerLayer.setDepth(4);
+                this.enemyLayerBottomRight.setDepth(5);
             }
 
             //Update enemy group movement and spawn more enemies every x milliseconds, where x = this.enemySpawnTime
@@ -574,7 +658,6 @@ class Play extends Phaser.Scene {
                     this.playFootstep('left');
                     this.movedLeft = true;
                     this.movedRight = false;
-                    //console.log('time between strides' + (this.lastRightStep - this.lastLeftStep));
                 } else if(this.movedLeft && Phaser.Input.Keyboard.JustDown(keyA)) { //Double A press causes trip
                     this.doTrip('repeat');
                     this.justTripped = true;
@@ -589,7 +672,6 @@ class Play extends Phaser.Scene {
                     this.moveForward();
                     this.movedRight = true;
                     this.movedLeft = false;
-                    //console.log('time between strides' + (this.lastRightStep - this.lastLeftStep));
                 } else if(this.movedRight && Phaser.Input.Keyboard.JustDown(keyD)) { //Double D press causes trip
                     this.doTrip('repeat');
                     this.justTripped = true;
@@ -633,31 +715,42 @@ class Play extends Phaser.Scene {
             //Crosswalk logic
             if (this.crosswalk.x + this.crosswalk.width/2 > this.player.x &&
                 this.crosswalk.x - this.crosswalk.width/2 < this.player.x &&
-                this.player.y >= 350 && 
+                this.onBottomSW && 
                 Phaser.Input.Keyboard.JustDown(keyUP)) {
-                    // this.swLeftBorder = 100;
-                    // this.swRightBorder = this.playerInitY + 20;
-                    // this.swRightBorder = 155;
+
                 //^walk across (still buggy) or v teleport
+                    this.player.setOffset(0,2 * game.config.height);
                     this.player.play('crossUp');
+                    this.player.on('animationcomplete', () => {
+                        this.player.setOffset(0, 130);
+                    });
                     this.player.y -= 320;
                     this.swLeftBorder = 20;
                     this.swRightBorder = 75;
                     this.onBottomSW = false;
                     this.onTopSW = true;
+                    this.movedLeft = false;
+                    this.movedRight = false;
             } 
             if (this.crosswalk.x + this.crosswalk.width/2 > this.player.x &&
                 this.crosswalk.x - this.crosswalk.width/2 < this.player.x &&
                 Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-                    // this.swLeftBorder = this.playerInitY - 40; //sidewalk borders
-                    // this.swRightBorder = this.playerInitY + 20;
+                
             //^walk across (still buggy) or v teleport
+                this.player.y -= 320;
+                this.player.setOffset(0,2 * game.config.height);
+                this.player.play('crossDown');
+                this.player.on('animationcomplete', () => {
+                    this.player.setOffset(0, 130);
+                    this.player.y += 320;
+                });
                 this.player.x = this.playerInitX
-                this.player.y = this.playerInitY + 20
                 this.swLeftBorder = this.playerInitY - 30; //sidewalk borders
                 this.swRightBorder = this.playerInitY + 25;
-                this.onBottomSW = false;
-                this.onTopSW = true;
+                this.onBottomSW = true;
+                this.onTopSW = false;
+                this.movedLeft = false;
+                this.movedRight = false;
             }
        
             //reset crosswalk
@@ -698,12 +791,7 @@ class Play extends Phaser.Scene {
 
         //Press X to add 1 to playerHealth
         if(Phaser.Input.Keyboard.JustDown(keyX)) {
-            this.playerHealth++;
-            //console.log('playerHealth = ' + this.playerHealth);
-            // let voiceArray = ['EE', 'ER', 'AH', 'high1', 'high2', 'high3', 'high4', 'low1', 'low2', 'low3', 'low4'];
-            // this.sound.play(voiceArray[this.testInt]);
-            // console.log(voiceArray[this.testInt]);
-            // this.testInt++;
+            this.takeDmg(-1);
         }
 
         //Press ESC to return to Menu
