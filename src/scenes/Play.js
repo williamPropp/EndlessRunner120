@@ -22,6 +22,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
         this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
         this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
+        this.load.atlas('player_down', 'Player_Down.png', 'Player_Down.json');
         this.load.audio('soundtrack', 'soundtrack.mp3');
 
         //Load Audio
@@ -52,11 +53,15 @@ class Play extends Phaser.Scene {
         this.crosswalk.x -= 15;
         this.crosswalk.y += 5.5;
         this.stepsTraveled += 1;
-        // for(let enemy of this.enemies.getChildren()) {
-        //     enemy.x -= 15;
-        //     enemy.x += 5.5;
-        // }
-        //console.log(this.crosswalk.y - this.player.y)
+        for(let enemy of this.enemies.getChildren()) {
+            enemy.x -= 15;
+            enemy.y += 5.5;
+        }
+        for(let superEnemy of this.superEnemies.getChildren()) {
+            superEnemy.x -= 15;
+            superEnemy.y += 5.5;
+        }
+
     }
 
     doStrafe(direction) {
@@ -86,6 +91,7 @@ class Play extends Phaser.Scene {
         this.player.angle = 90; //Make player 'trip'
         this.player.x += 180; //Correct x, y after rotation
         this.player.y += 80;
+        this.player.setOffset(-100,10); //Correct hitbox
     }
 
     //Spawn enemy on either side of the street
@@ -417,6 +423,19 @@ class Play extends Phaser.Scene {
             repeat: 0
         });
 
+        this.anims.create({
+            key: 'crossDown',
+            frames: this.anims.generateFrameNames('player_down', {
+                start: 1,
+                end: 12,
+                zeroPad: 2,
+                prefix: 'Player_Cross_',
+                suffix: '.png'
+            }),
+            frameRate: 8,
+            repeat: 0
+        });
+
         //Create enemy group
         this.enemies = this.physics.add.group({
             classType: Phaser.GameObjects.Sprite,
@@ -628,6 +647,7 @@ class Play extends Phaser.Scene {
                 this.player.angle = 0;
                 this.player.x -= 180; //Correct x, y after rotation
                 this.player.y -= 80;
+                this.player.setOffset(0, 130); //Correct hitbox
 
                 this.moveForward();
                 this.lastLeftStep = 0;
@@ -640,31 +660,42 @@ class Play extends Phaser.Scene {
             //Crosswalk logic
             if (this.crosswalk.x + this.crosswalk.width/2 > this.player.x &&
                 this.crosswalk.x - this.crosswalk.width/2 < this.player.x &&
-                this.player.y >= 350 && 
+                this.onBottomSW && 
                 Phaser.Input.Keyboard.JustDown(keyUP)) {
-                    // this.swLeftBorder = 100;
-                    // this.swRightBorder = this.playerInitY + 20;
-                    // this.swRightBorder = 155;
+
                 //^walk across (still buggy) or v teleport
+                    this.player.setOffset(0,2 * game.config.height);
                     this.player.play('crossUp');
+                    this.player.on('animationcomplete', () => {
+                        this.player.setOffset(0, 130);
+                    });
                     this.player.y -= 320;
                     this.swLeftBorder = 20;
                     this.swRightBorder = 75;
                     this.onBottomSW = false;
                     this.onTopSW = true;
+                    this.movedLeft = false;
+                    this.movedRight = false;
             } 
             if (this.crosswalk.x + this.crosswalk.width/2 > this.player.x &&
                 this.crosswalk.x - this.crosswalk.width/2 < this.player.x &&
                 Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-                    // this.swLeftBorder = this.playerInitY - 40; //sidewalk borders
-                    // this.swRightBorder = this.playerInitY + 20;
+                
             //^walk across (still buggy) or v teleport
+                this.player.y -= 320;
+                this.player.setOffset(0,2 * game.config.height);
+                this.player.play('crossDown');
+                this.player.on('animationcomplete', () => {
+                    this.player.setOffset(0, 130);
+                    this.player.y += 320;
+                });
                 this.player.x = this.playerInitX
-                this.player.y = this.playerInitY + 20
                 this.swLeftBorder = this.playerInitY - 30; //sidewalk borders
                 this.swRightBorder = this.playerInitY + 25;
-                this.onBottomSW = false;
-                this.onTopSW = true;
+                this.onBottomSW = true;
+                this.onTopSW = false;
+                this.movedLeft = false;
+                this.movedRight = false;
             }
        
             //reset crosswalk
