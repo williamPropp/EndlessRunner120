@@ -22,7 +22,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
         this.load.atlas('enemy_walk', 'Enemy_Walk.png', 'Enemy_Walk.json');
         this.load.atlas('player_up', 'Player_Up.png', 'Player_Up.json');
-        this.load.audio('soundtrack', 'soundtrack.wav');
+        this.load.audio('soundtrack', 'soundtrack.mp3');
 
         //Load Audio
         this.load.audio('dmg', '/SFX/dmg.wav');

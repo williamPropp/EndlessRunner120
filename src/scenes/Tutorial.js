@@ -10,7 +10,7 @@ class Tutorial extends Phaser.Scene {
         this.load.image('cross', 'Crosswalk.png');
         this.load.atlas('steps', 'Player_Steps.png', 'Player_Steps.json');
         this.load.audio('beep', 'buttonPress.wav');
-        this.load.audio('soundtrackTutorial', 'soundtrackTutorial.wav')
+        this.load.audio('soundtrackTutorial', 'soundtrackTutorial.mp3')
     }
 
     create() {
