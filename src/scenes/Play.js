@@ -479,7 +479,7 @@ class Play extends Phaser.Scene {
         //While gameOver = false
         if(!this.gameOver) {
 
-            //transitions
+            //Transition between backgrounds by fading to white
             if(this.stepsTraveled >= 15 && this.stepsTraveled <= 20){
                 this.rectangle.alpha = (this.stepsTraveled - 15) / 5;
             }
@@ -493,13 +493,11 @@ class Play extends Phaser.Scene {
                 this.rectangle.alpha = (this.stepsTraveled - 55) * -1 / 5;
             }
 
-            //change backgrounds
+            //Change backgrounds
             if(this.stepsTraveled > 20) {
-                //this.bg.destroy();
                 this.bg.setTexture('city');
             }
             if(this.stepsTraveled > 50) {
-                //this.bg.destroy();
                 this.bg.setTexture('sea');
             }
 
@@ -717,63 +715,3 @@ class Play extends Phaser.Scene {
         }
     }
 }
-
-
-
-
-
-//POLLING BASED VERSION OF ENEMY COLLISION DETECTION
-
-//Test if 2 sprite objects are colliding with eachother, returns boolean
-// collisionTest(obj1, obj2) {
-//     //Uncomment this console.log() to see live updates of enemy x, y and area
-//     //console.log('player x,y,area: x=' + obj1.x + ', y=' + obj1.y + ', area = ' + (obj1.width * obj1.height) + '\n enemy x,y,area: x=' + obj2.x + ', y=' + obj2.y + ', area = ' + (obj2.width * obj2.height));    
-//     if((obj1.x <= (obj2.x + obj2.width)) && (obj1.x >= obj2.x) && (obj1.y <= obj2.y + obj2.height) && (obj1.y >= obj2.y)) {
-//         //console.log('collision triggered');
-//         return true;
-//     } else {
-//         return false;
-//     }
-// }
-
-//Run this every frame in update()
-// if(this.collisionTest(this.player,enemy) && !this.justCollided){
-//     console.log('collision triggered')
-//     this.takeDmg(1);
-//     this.justCollided = true;
-//     this.time.delayedCall(this.enemySpawnTime, () => {
-//         this.justCollided = false;
-//     });
-// }
-
-
-
-
-// More efficient enemySpawn() maybe
-// let swOffsetX;
-// let swOffsetY;
-// let consoleTopBottom;
-// let consoleLeftRight;
-
-// if(rndTopBottom == 0){
-//     swOffsetY = this.enemyInitBottomY;
-//     swOffsetX = this.enemyInitBottomX;
-//     consoleTopBottom = 'enemy spawned on bottom sidewalk, ';
-// } else if(rndTopBottom == 1) {
-//     swOffsetY = this.enemyInitTopY;
-//     swOffsetX = this.enemyInitTopX;
-//     consoleTopBottom = 'enemy spawned on top sidewalk, ';
-// }
-
-// if(rndLeftRight == 0) { 
-//     swOffsetX += 50;
-//     consoleTopBottom = 'left side';
-// } else if(rndLeftRight == 1) {
-//     swOffsetX += 283;
-//     consoleTopBottom = 'right side';
-// }
-
-// let newEnemy = new Enemy(this, swOffsetX, swOffsetY, 'enemy').setOrigin(0,0);
-// this.enemies.add(newEnemy);
-// newEnemy.play('enemyWalk');
-// console.log(consoleTopBottom + consoleLeftRight);
